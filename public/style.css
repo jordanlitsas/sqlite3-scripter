@@ -5,34 +5,6 @@
 }
 
 
-#wrapper{
-    margin-top: 5vh;
-}
-
-h2{
-    margin-top: 0px !important;
-    text-align: center;
-}
-
-img{
-    height: 100%;
-    width: 100%;
-}
-
-
-
-img{
-    opacity: 0.5;
-    filter: alpha(opacity=40);
-}
-img:hover{
-    opacity: 1.0;
-    filter: alpha(opacity=100);
-}
-
-.projects{
-    height: 40vh !important;
-}
 
 nav{
     margin-bottom: 50px !important;
