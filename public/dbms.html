@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>The Databaser</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href = "dbStyle.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <body>
+
+        <div class = "container" style = "background-color: aliceblue;">
+            <div class = "header">
+                <h1 id = "heading">SQL Database Generator</h1>
+            </div>
+            <hr>
+
+            <div class = "main">
+                <div class = "table-tab">
+                    <nav class = "blue-grey">
+                        <div class="nav-wrapper ">
+                          <ul id="tables" class="left hide-on-med-and-down">
+                              <li><a id = "new-table">+</a></li>
+                            <li><a>Table Name Placeholder</a></li>
+                          </ul>
+                        </div>
+                      </nav>
+                </div>
+                <div id = "db-board"></div>
+                <div id = "control-board">
+                    <nav class = "blue-grey">
+                        <div class="nav-wrapper ">
+                          <ul id="nav-mobile" class="right hide-on-med-and-down">
+                            <li><a>New Attribute</a></li>
+                          </ul>
+                        </div>
+                      </nav>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+
+            window.addEventListener('DOMContentLoaded', (event) => {
+                document.querySelector("#new-table").addEventListener("click", newTable);
+            });
+
+
+           newTable = () => {
+               let li = document.createElement("li");
+               let a = document.createElement("a");
+               a.innerHTML = `<em>new table</em>`;
+               li.appendChild(a);
+               document.querySelector("#tables").appendChild(li);
+           };
+
+          
+
+
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    </body>
+</html>

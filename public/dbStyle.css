@@ -1,0 +1,16 @@
+#heading{
+    text-align: center;
+}
+
+#db-board{
+    height: 60vh !important;
+    background-color: cadetblue;
+}
+
+#control-board{
+    height:5vh !important;
+}
+
+input{
+    color:white !important;
+}
