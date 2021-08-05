@@ -1,5 +1,5 @@
 {
-  "name": "sit725-2021-t2-prac3",
+  "name": "sit725-2021-t2-prac4",
   "version": "1.0.0",
   "description": "prac3",
   "main": "server.js",
@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jordanlitsas/sit725-2021-t2-prac3.git"
+    "url": "git+https://github.com/jordanlitsas/sit725-2021-t2-prac4.git"
   },
   "author": "Jordan Litsas",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jordanlitsas/sit725-2021-t2-prac3/issues"
+    "url": "https://github.com/jordanlitsas/sit725-2021-t2-prac4/issues"
   },
-  "homepage": "https://github.com/jordanlitsas/sit725-2021-t2-prac3#readme"
+  "homepage": "https://github.com/jordanlitsas/sit725-2021-t2-pra43#readme"
 }
