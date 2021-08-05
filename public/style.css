@@ -1,17 +1,23 @@
-#top-nav{
+.top-nav{
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content:center;
+
 }
 
-
+#header{
+  text-align: center;
+}
 
 nav{
     margin-bottom: 50px !important;
 }
 
-body{ min-height:100vh; margin:0; position:relative; }
-
+body{ 
+  min-height:100vh; 
+  margin:0; 
+  position:relative;
+}
 
 
 footer {
@@ -20,3 +26,29 @@ footer {
   width: 100%;
   height: 50px;
 }
+
+
+img, svg{
+  height: 5vh;
+  width:auto;
+}
+
+img:hover{
+  opacity: 0.5;
+}
+
+
+svg:hover{
+  opacity: 0.5;
+
+}
+ .contact-img{
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 15px;
+} 
+
+#about-me{
+  text-align: center;
+}
+

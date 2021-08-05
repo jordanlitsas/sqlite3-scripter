@@ -1,4 +1,5 @@
 let express = require("express");
+const { dirname } = require("path");
 let app = express();
 
 //var app = require('express')();
@@ -11,10 +12,12 @@ let http = require('http').createServer(app);
 var port = process.env.PORT || 3000;
 
 app.use(express.static(__dirname + '/public'));
+console.log(__dirname + "/public")
 
 app.get("/sqlite3DatabaseProject", function (request, response) {
-  var html = `This page will present my database generator.`
-  response.end(html);
+
+  response.redirect(__dirname + "/public/dmbs.html")
+  // response.end("DBMS SQLite3")
 });
 
 app.get("/mainProject", function (request, response) {
@@ -28,7 +31,7 @@ app.get("/chessProject", function (request, response) {
 });
 
 app.get("/weatherApp", function(request, response) {
-  response.end("Im in the process of finding where I left those website files ........");
+  response.end("Im in the process of finding where I left those files ........");
 })
 
 
