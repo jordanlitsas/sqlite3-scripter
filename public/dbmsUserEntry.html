@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>The Databaser</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href = "dbStyle.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    </head>
+    <body>
+
+        <div class = "row" style = "height: 10vh"></div>
+        <div id = "login-wrapper">
+            <div  class="row">
+                <div class = "col s4"></div>
+                <div class="col s4 z-depth-6 card-panel">
+
+
+                    <div class="row">
+                      <div class="input-field col s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input type="text" name = "username" id = "username">
+                        <label for="email" data-error="wrong" data-success="right">name</label>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="input-field col s12">
+                        <i class="material-icons prefix">lock_outline</i>
+                        <input id="database" type="text" name = "database" id = "database">
+                        <label for="password">database</label>
+                      </div>
+                    </div>
+                    
+                    <div class="row">
+
+                      <div class="input-field col s12">
+                        <input type = "submit" name = "loginBtn" class="btn col s12" value="login" id = "login">
+                      </div>
+                
+                      <div class="col s12">
+                        <button class = "waves-effect waves-light btn" style = "width:100%;" id = "createBtn">
+                          Create
+                        </button>                      
+                      </div>
+
+                    </div>
+                   
+
+                </div>
+              </div> 
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        
+
+        <script>
+
+
+            window.addEventListener('DOMContentLoaded', (event) => {
+              
+              document.querySelector("#createBtn").onclick = createDatabase;
+              document.querySelector("#login").onclick = getDatabase;
+            });
+
+
+            createDatabase = () => {
+
+                let username = $('#username').val();
+                let dbName = $('#database').val();
+
+                let user = {
+                  name: username,
+                  database: dbName
+                }
+                
+                $.ajax({
+                  url: '/createDatabase',
+                  contentType: 'application/json',
+                  data: JSON.stringify(user),
+                  type: 'POST',
+                  success: function(result){
+                    M.toast({html: 'User and database created.'})
+                  }
+                })
+            }
+            
+
+            getDatabase = () => {
+                let username = $('#username').val();
+                let dbName = $('#database').val();
+
+                var user = {
+                  name: username, 
+                  database: dbName
+                }
+
+
+                $.ajax({
+                  url: '/getDatabase',
+                  contentType: 'application/json',
+                  data: JSON.stringify(user),
+                  type: 'POST',
+                  success: function(result){
+                    console.log(result)
+                    M.toast({html: `Retrieving database ${user.database} | Author: ${user.name}.`})
+                  }
+                })
+
+
+               
+               
+
+            }
+
+        
+
+          // var tableCounter = 0;
+          //   window.addEventListener('DOMContentLoaded', (event) => {
+          //       alert("Dom loadednode")
+          //       document.querySelector("#new-table").addEventListener("click", newTable);
+          //   });
+
+
+          //  newTable = () => {
+          //       tableCounter++;
+          //       let li = document.createElement("li");
+          //       let a = document.createElement("a");
+          //       li.appendChild(a);
+          //       document.querySelector("#tables").appendChild(li);
+          //       li.id = `table${tableCounter}`;
+          //       a.innerHTML = `<input type = "text" placeholder = "new table" name = "table${tableCounter}Name">`;
+          //       a.addEventListener("click", setTableName); 
+          //  };
+
+          
+          //  setTableName  = () => {
+          //      let tab = document.getElementById(`table${tableCounter})`);
+          //      console.log(tab)
+          //      tab.innerHTML = `<input type = "text">`;
+          //  }
+        </script>
+
+    </body>
+</html>
