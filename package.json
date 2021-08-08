@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/jordanlitsas/sit725-2021-t2-prac4/issues"
   },
-  "homepage": "https://github.com/jordanlitsas/sit725-2021-t2-pra43#readme"
+  "homepage": "https://github.com/jordanlitsas/sit725-2021-t2-pra43#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^4.1.0",
+    "reload": "^3.2.0"
+  }
 }

@@ -12,13 +12,30 @@
 
     </head>
     <body>
+
+
+      
+  <!-- Switch -->
+  <form action="/switch" method="post">
+  <div class="switch">
+    <label>
+      Off
+      <input type="checkbox" name = "cb">
+      <span class="lever"></span>
+      On
+    </label>
+
+    <input type = "submit" ></submit>
+
+  </div>
+  </form>
        
         <nav class = "blue-grey">
           
              <div class = "top-nav">
                <ul>
                  <li><a href = "#">Home</a></li>
-                 <li><a href = "#">Projects</a></li>
+                 <li><a href = "#">About</a></li>
                  <li><a href = "#">Contact</a></li> 
                </ul>
               </div>
@@ -60,36 +77,46 @@
 
 
 
-
           
           <div class = "container">
-            <div class="row">
+            <div class="row"> 
 
 
               <!--Assigment 2 Card-->
-                <div class="col s12 m6 " >
-                  <div class="card blue-grey darken-1">
+            <div class="col s12 m6" >
+                  <div class="card small blue-grey darken-1 responsive-card">
                     <div class="card-content white-text">
                       <span class="card-title">Assignment 2</span>
                       <p>This project will be assignment 2 of SIT725. It is obviously not done yet and doesn't have the associated information to write about. Blah blah 
                         blah, it's going to be really good though.</p>
-                        <ul>
-                            <li>unknown tech</li>
-                            <li>unknown tech</li>
-                            <li>unknown tech</li>
-
-                        </ul>
-                    </div>
-                    <div class="card-action">
-                      <a href="/mainProject">Try it out</a>
-                      <a href="https://github.com/jordanlitsas">GitHub</a>
+                        <div class = "row">
+                            <div class = "col s6">
+                              <ul>
+                                <li>unknown tech</li>
+                                <li>unknown tech</li>
+                                <li>unknown tech</li>
+                              </ul>
+                            </div>
+                            <div class = "col s6">
+                                <div class = "project-links">
+                                  <a href="/mainProject" class = "waves-effect waves-light btn project-link-item">
+                                    <i class="material-icons right">cloud</i>
+                                    Try it out
+                                  </a>
+                                  <a href="https://github.com/jordanlitsas" class = "waves-effect waves-light btn project-link-item">
+                                    <i class="material-icons right">cloud</i>
+                                    GitHub
+                                  </a>
+                                </div>
+                            </div>             
+                          </div>
                     </div>
                   </div>
-                </div>
+                </div> 
 
               <!--SQLite3 DBMS Card-->
-                <div class="col s12 m6">
-                    <div class="card blue-grey darken-1">
+                <div class="col s12 m6"> 
+                    <div class="card small blue-grey darken-1 responsive-card">
                       <div class="card-content white-text">
                         <span class="card-title">Assignment 1 Main Project - SQL Database Generator</span>
                         <p>I know it will involve creating an entity-relationship diagram, and generating an empty SQLite3 database with NodeJS.</p><br>
@@ -107,11 +134,11 @@
                     </div>
                   </div>
 
-                  <div class="row">
+                  <div class="row"> 
                     
                     <!--Chess Card-->
-                    <div class="col s12 m6">
-                      <div class="card blue-grey darken-1">
+                   <div class="col s12 m6">
+                      <div class="card small blue-grey darken-1 responsive-card">
                         <div class="card-content white-text">
                           <span class="card-title">Text-Based Chess</span>
                           <p>
@@ -128,11 +155,11 @@
                         
                       </div>
                       
-                    </div>
+                    </div> 
                         
                     <!--Weather App Card-->
                         <div class="col s12 m6">
-                          <div class="card blue-grey darken-1">
+                          <div class="card small blue-grey darken-1 responsive-card">
                             <div class="card-content white-text">
                               <span class="card-title">Weather App</span>
                               <p>This app allows the user to generate a weather report by clicking an interactive Google Maps plugin.</p>
@@ -148,7 +175,7 @@
                         </div>
               </div>
 
-      
+              
 
               
              

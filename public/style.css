@@ -52,3 +52,12 @@ svg:hover{
   text-align: center;
 }
 
+.project-links{
+  display: flex;
+  flex-direction: column;
+}
+
+.project-link-item{
+  margin-top: 20px !important;
+}
+
