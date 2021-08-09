@@ -11,9 +11,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     </head>
-    <body>
+    <body class = "demo">
 
-        <div class = "row" style = "height: 10vh"></div>
+        <div class = "row" style = "height: 10vh">
+          <button type = "button"><a href = "index.html">Home</a></button>
+        </div>
         <div id = "login-wrapper">
             <div  class="row">
                 <div class = "col s4"></div>
@@ -50,7 +52,7 @@
 
                     </div>
                    
-
+                    <span class = "col s12" id = "message" style = "text-align: center; color:blue; padding-bottom: 15px;"></span>
                 </div>
               </div> 
         </div>
@@ -59,7 +61,7 @@
         
 
         <script>
-
+          
 
             window.addEventListener('DOMContentLoaded', (event) => {
               
@@ -84,12 +86,23 @@
                   data: JSON.stringify(user),
                   type: 'POST',
                   success: function(result){
-                    M.toast({html: 'User and database created.'})
+                    if (result.result == 'takenName'){
+                      M.toast({html: 'Name already taken.\nTry Again.'})
+                    }
+                    else { 
+                      intialiseNewDatabase(result)
+                      M.toast({html: 'User and database created.'})
+                    }
                   }
                 })
             }
             
+            intialiseNewDatabase = (result) => {
+              console.log(result)
+            }
 
+
+          var flag = false;
             getDatabase = () => {
                 let username = $('#username').val();
                 let dbName = $('#database').val();
@@ -99,51 +112,26 @@
                   database: dbName
                 }
 
-
+                var domAnchor = $(this);
                 $.ajax({
                   url: '/getDatabase',
                   contentType: 'application/json',
                   data: JSON.stringify(user),
                   type: 'POST',
                   success: function(result){
-                    console.log(result)
                     M.toast({html: `Retrieving database ${user.database} | Author: ${user.name}.`})
+                    // document.querySelector('#message').innerHTML = `Welcome back ${user.database}`;
+                    // document.querySelector('body').innerHTML = `${intialiseNewDatabase(result)}`;
+                    let data = JSON.parse(result);
+                    document.querySelector('body').innerHTML = data;  
                   }
-                })
-
-
-               
-               
-
+                }
+                )
             }
 
-        
+            
 
-          // var tableCounter = 0;
-          //   window.addEventListener('DOMContentLoaded', (event) => {
-          //       alert("Dom loadednode")
-          //       document.querySelector("#new-table").addEventListener("click", newTable);
-          //   });
-
-
-          //  newTable = () => {
-          //       tableCounter++;
-          //       let li = document.createElement("li");
-          //       let a = document.createElement("a");
-          //       li.appendChild(a);
-          //       document.querySelector("#tables").appendChild(li);
-          //       li.id = `table${tableCounter}`;
-          //       a.innerHTML = `<input type = "text" placeholder = "new table" name = "table${tableCounter}Name">`;
-          //       a.addEventListener("click", setTableName); 
-          //  };
-
-          
-          //  setTableName  = () => {
-          //      let tab = document.getElementById(`table${tableCounter})`);
-          //      console.log(tab)
-          //      tab.innerHTML = `<input type = "text">`;
-          //  }
-        </script>
-
-    </body>
-</html>
+            </script>
+            </body>
+            </html>
+            

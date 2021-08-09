@@ -37,7 +37,7 @@ openConnection();
 const insertUser = (user, res) => {
   userCollection.insert(user, (err, result) => {
     console.log("User Inserted", result)
-    res.send({result: 200})
+    res.send({result: 200, newUser: user})
   })
 }
 
@@ -46,28 +46,27 @@ const insertUser = (user, res) => {
 app.post('/createDatabase', function(req, res){
 
   let user = req.body;
-  userCollection.find({'name': user.name}).toArray(function(err, result){
+  userCollection.find({'name': user.name,}).toArray(function(err, result){
     if (result.length == 1){
-      //handle user/db names taken
+      res.send({result: 'takenName', takenUser: user})
     }
     else if (result.length == 0){
        insertUser(user, res);
     }
   })
-
 });
 
 app.post('/getDatabase', function(req, res){
-  let data = req.body;
-  let user = getUser(res, data);
+  let user = req.body;
+  getUser(res, user);
 
 });
 
 
-const getUser = (res, data) => {
-  userCollection.find({'name': data.name}).toArray(function(err, result){
+const getUser = (res, user) => {
+  userCollection.find({'name': user.name}).toArray(function(err, result){
     if (err) throw err;
-    res.send(result);
+    res.send({result: 200, 'user': user});
   })
 }
 
