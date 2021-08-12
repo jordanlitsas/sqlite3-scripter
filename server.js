@@ -9,11 +9,15 @@ app.use(express.urlencoded({extended: false}));
 let http = require('http').createServer(app);
 
 
+let circularJSON = require('circular-json');
+
+
 var port = process.env.PORT || 3000;
 app.use(express.static(__dirname + '/public'));
 
 
 const MongoClient = require('mongodb').MongoClient;
+const e = require("express");
 const uri = `mongodb+srv://prac4-pw:prac4-pw@cluster0.gwxoy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -43,12 +47,49 @@ const insertUser = (user, res) => {
 
 
 
+app.post('/saveDatabase', function(req, res){
+  
+
+  let data = req.body
+  let user = data[0];
+  let table = data[1]
+
+  res.send({'user': user, 'table': table})
+
+  // let query = {
+  //   'name': user.name,
+  //   'database': user.database
+  // };
+
+  // let updateDoc = {$set: {table}}
+
+  // let options = {upsert: true}
+  
+  
+  // userCollection.updateOne(query, updateDoc, options);
+
+
+
+});
+
+
+
+
+
 app.post('/createDatabase', function(req, res){
 
   let user = req.body;
-  userCollection.find({'name': user.name,}).toArray(function(err, result){
+  userCollection.find({'name': user.name}).toArray(function(err, result){
     if (result.length == 1){
-      res.send({result: 'takenName', takenUser: user})
+      if (result[0].database != user.database){
+        //add database to user's collection
+        //call getDatabase( {username: user.name, database: user.database })
+      }
+
+      else {
+        res.send({result: 'takenName', takenUser: user})
+      }
+
     }
     else if (result.length == 0){
        insertUser(user, res);
@@ -58,17 +99,49 @@ app.post('/createDatabase', function(req, res){
 
 app.post('/getDatabase', function(req, res){
   let user = req.body;
-  getUser(res, user);
+  let query = {'name': user.name, 'database': user.database};
+  res.send( [res, user, query] )
 
 });
 
-
-const getUser = (res, user) => {
-  userCollection.find({'name': user.name}).toArray(function(err, result){
-    if (err) throw err;
-    res.send({result: 200, 'user': user});
-  })
+ const getUser = (res, user, query) => {
+  
+  let response = userCollection.find({}).toArray();
+  res.send(response)
 }
+
+  // userCollection.find(query).toArray(function(err, result){
+    // if (err) throw err;
+    // res.send(result)
+    // return result
+    // }
+    // try {
+
+    //   if (result[0].name == user.name && result[0].database == user.database){
+    //    return {'user': result}
+
+    //   } 
+      
+    //   else if (result[0].name == user.name && result[0].database != user.database){
+    //     return {error: 'db'};
+    //   }
+
+    // }
+    // catch {
+    //   return {error: 'both'};
+    // }
+// )}
+
+
+
+
+ 
+
+
+
+
+
+
 
 http.listen(port,()=>{
   console.log("Listening on port ", port);

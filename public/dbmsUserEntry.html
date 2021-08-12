@@ -11,7 +11,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     </head>
-    <body class = "demo">
+    <body id = "demo">
 
         <div class = "row" style = "height: 10vh">
           <button type = "button"><a href = "index.html">Home</a></button>
@@ -60,78 +60,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
         
 
-        <script>
-          
-
-            window.addEventListener('DOMContentLoaded', (event) => {
-              
-              document.querySelector("#createBtn").onclick = createDatabase;
-              document.querySelector("#login").onclick = getDatabase;
-            });
-
-
-            createDatabase = () => {
-
-                let username = $('#username').val();
-                let dbName = $('#database').val();
-
-                let user = {
-                  name: username,
-                  database: dbName
-                }
-                
-                $.ajax({
-                  url: '/createDatabase',
-                  contentType: 'application/json',
-                  data: JSON.stringify(user),
-                  type: 'POST',
-                  success: function(result){
-                    if (result.result == 'takenName'){
-                      M.toast({html: 'Name already taken.\nTry Again.'})
-                    }
-                    else { 
-                      intialiseNewDatabase(result)
-                      M.toast({html: 'User and database created.'})
-                    }
-                  }
-                })
-            }
-            
-            intialiseNewDatabase = (result) => {
-              console.log(result)
-            }
-
-
-          var flag = false;
-            getDatabase = () => {
-                let username = $('#username').val();
-                let dbName = $('#database').val();
-
-                var user = {
-                  name: username, 
-                  database: dbName
-                }
-
-                var domAnchor = $(this);
-                $.ajax({
-                  url: '/getDatabase',
-                  contentType: 'application/json',
-                  data: JSON.stringify(user),
-                  type: 'POST',
-                  success: function(result){
-                    M.toast({html: `Retrieving database ${user.database} | Author: ${user.name}.`})
-                    // document.querySelector('#message').innerHTML = `Welcome back ${user.database}`;
-                    // document.querySelector('body').innerHTML = `${intialiseNewDatabase(result)}`;
-                    let data = JSON.parse(result);
-                    document.querySelector('body').innerHTML = data;  
-                  }
-                }
-                )
-            }
-
-            
-
-            </script>
+        <script src = "dbmsUserEntry.js"></script>
             </body>
             </html>
-            

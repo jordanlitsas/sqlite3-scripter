@@ -1,16 +1,93 @@
-#heading{
-    text-align: center;
+
+body{ 
+    min-height:100vh; 
+    margin:0; 
+    position:relative;
+    overflow: hidden;
+  }
+  
+.top-nav{
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
 }
 
-#db-board{
-    height: 60vh !important;
-    background-color: cadetblue;
+nav{
+    margin-bottom:0px !important;
 }
 
-#control-board{
-    height:5vh !important;
+li{
+    text-decoration: none;
+    list-style: none;
 }
 
-input{
+li:hover{
+    background-color: rgba(0,0,0,0.1);
+    transition: background-color .3s;
+    transition-property: background-color;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+    cursor: pointer;
+}
+
+#top-control{
+    height:3vh;
+}
+
+#header{
+  text-align: center;
+}
+
+nav.blue-grey{
+    margin-bottom: 50px !important;
+}
+
+
+
+#main{
+    height: 100vh;
+    border: 1px solid black;
+    background-color: grey;
+    /* margin-left: 10vw !important; */
+    padding-left: 0px;
+    
+
+}
+
+li.table-name-input{
+    /* width:10vw; */
+}
+
+input.table-name-input{
     color:white !important;
+
+}
+
+#sidenav{
+    padding: 0px;
+    /* float:left; */
+    background-color: grey;
+
+}
+
+div.row{
+    margin-bottom: 0px;
+}
+
+nav.blue-grey{
+    margin:0px !important;
+}
+#top-nav{
+    margin-bottom: 30px !important;
+}
+
+nav.blue-grey.bottom-nav{
+    position: fixed;
+    bottom:0px;
+    left: 8.4%;
+}
+
+select{
+    display: inline !important;
 }
