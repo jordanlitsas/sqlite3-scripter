@@ -12,7 +12,7 @@ const generate = () => {
 let dataType = $('#data-type').val();
 let attribute = $('#attribute').val();
 let constraint = $('#constraint').val();
-let tableName = $('table0NameInput').val();
+let tableName = $('#table1NameInput').val();
 
 
 let table = {
@@ -28,7 +28,9 @@ $.ajax({
   data: JSON.stringify([currentUser, table]),
   type: 'POST',
   success: function(result){
-   
+    if (result.result == 200){
+      M.toast({html: `Table ${result.tableName} has been saved.`})
+    }
   }
 }) 
 
@@ -152,7 +154,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 });
 
 
-  createDatabase = () => {
+const  createDatabase = () => {
 
       let username = $('#username').val();
       let dbName = $('#database').val();
@@ -191,7 +193,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
            
 
 
-  getDatabase = () => {
+
+  const getDatabase = () => {
       let username = $('#username').val();
       let dbName = $('#database').val();
 
@@ -200,6 +203,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         database: dbName
       }
 
+
       $.ajax({
         async: false,
         url: '/getDatabase',
@@ -207,23 +211,25 @@ window.addEventListener('DOMContentLoaded', (event) => {
         data: JSON.stringify(user),
         type: 'POST',
         success: function(result){
-          if (result['error'] == 'both'){
-            M.toast({html: `This combination doesn't exist.`})
-          }
-          else if (result.error == 'db'){
-            M.toast({html: `Your database name is not associated with this user.`})
+          if (Object.keys(result).length === 1){
+            currentUser = result;
+            initialiseuserView();
           }
           else {
-            console.log(result);
-            // currentUser.name = result.name;
-            // currentUser.database = result.user[0].database;
-            // currentUser.id = result.user[0]._id;
-            // document.querySelector('body').innerHTML = restoreDBMS_HTML();
-            }
+            M.toast({html: 'That username and database combination does not exist.'})
+          }
+            
           }
           
         })
   }
+
+
+  const initialiseUserView = () => {
+    console.log(currentUser)
+    
+  }
+
 
   const getBaseDBMS_HTML = () => {
     return `<nav class = "blue-grey" id = "top-nav">
