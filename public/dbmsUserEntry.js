@@ -170,7 +170,7 @@ const  createDatabase = () => {
         data: JSON.stringify(user),
         type: 'POST',
         success: function(result){
-          if (result.result == 'takenName'){
+          if (result.error == 'used'){
             M.toast({html: 'Name already taken.\nTry Again.'})
           }
           else { 
@@ -213,7 +213,7 @@ const  createDatabase = () => {
         success: function(result){
           if (Object.keys(result).length === 1){
             currentUser = result;
-            initialiseuserView();
+            console.log(currentUser)
           }
           else {
             M.toast({html: 'That username and database combination does not exist.'})
@@ -225,10 +225,7 @@ const  createDatabase = () => {
   }
 
 
-  const initialiseUserView = () => {
-    console.log(currentUser)
-    
-  }
+ 
 
 
   const getBaseDBMS_HTML = () => {

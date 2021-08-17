@@ -1,114 +1,99 @@
 let express = require("express");
-const { dirname } = require("path");
 let app = express();
-
-const bodyParser = require('body-parser')
-
-app.use(bodyParser.json());
-app.use(express.urlencoded({extended: false}));
+let dbConnecton = require('./dbConnection');
 let http = require('http').createServer(app);
+let bodyParser = require('body-parser')
 
 
-let circularJSON = require('circular-json');
+//routes
+let userRoutes = require('./routes/users');
+
+var port = 1000;
+
+const { dirname } = require("path");
 
 
-var port = process.env.PORT || 8080;
+app.use(bodyParser.urlencoded({ extended: false }))
+ app.use(bodyParser.json())
+app.use(express.json())
 app.use(express.static(__dirname + '/public'));
-
-
-const MongoClient = require('mongodb').MongoClient;
-const uri = `mongodb+srv://prac4-pw:prac4-pw@cluster0.gwxoy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-let userCollection;
-
-//Opens connection to MongoDB database.
-const openConnection = (message) => {
-  client.connect((err, db) => {
-    userCollection = client.db("newDB").collection('users');
-    if (!err){
-      console.log("DB Connected.")
-    }
-    else{
-      console.log(err)
-    }
-    
-  });
-}
-openConnection();
-
-const insertUser = (user, res) => {
-  userCollection.insert(user, (err, result) => {
-    console.log("User Inserted", result)
-    res.send({result: 200, newUser: user})
-  })
-}
+app.use(userRoutes);
 
 
 
-app.post('/saveDatabase', function(req, res){
+
+// const insertUser = (user, res) => {
+//   userCollection.insert(user, (err, result) => {
+//     console.log("User Inserted", result)
+//     res.send({result: 200, newUser: user})
+//   })
+// }
+
+
+
+// app.post('/saveDatabase', function(req, res){
   
-  let data = req.body
-  let user = data[0];
-  let table = data[1]
+//   let data = req.body
+//   let user = data[0];
+//   let table = data[1]
 
-  let submission = {
-      'rows': [ {table} ]
-  }
+//   let submission = {
+//       'rows': [ {table} ]
+//   }
 
-  let tables = [submission];
+//   let tables = [submission];
 
-  userCollection.updateOne(
-    { name: user.name},
-    {
-      $set: { 'tables': tables},
-      $currentDate: { lastModified: true }
-    }
-  );
-
-
-  res.send({result: 200, tableName: table.name});
+//   userCollection.updateOne(
+//     { name: user.name},
+//     {
+//       $set: { 'tables': tables},
+//       $currentDate: { lastModified: true }
+//     }
+//   );
 
 
-});
+//   res.send({result: 200, tableName: table.name});
 
 
+// });
 
 
 
-app.post('/createDatabase', function(req, res){
 
-  let user = req.body;
-  let query = {
-    'name': user.name,
-    'database': user.database
-  }
-  userCollection.findOne(query, function (err, result){
-    if (err) throw err;
-    if (typeof(result) === 'undefined'){
-      insertUser(user, res)
-    }
-    else {
-      res.send({error: 'used'})
-    }
-  })
+
+// app.post('/createDatabase', function(req, res){
+
+//   let user = req.body;
+//   let query = {
+//     'name': user.name,
+//     'database': user.database
+//   }
+//   userCollection.findOne(query, function (err, result){
+//     if (err) throw err;
+//     if (typeof(result) === 'undefined'){
+//       insertUser(user, res)
+//     }
+//     else {
+//       res.send({error: 'used'})
+//     }
+//   })
       
-});
+// });
 
-app.post('/getDatabase', function(req, res){
-  let user = req.body;
-  let query = {name: user.name, database: user.database};
-  getUser(res, query);
+// app.post('/getDatabase', function(req, res){
+//   let user = req.body;
+//   let query = {name: user.name, database: user.database};
+//   getUser(res, query);
   
-});
+// });
 
- const getUser = (res, query) => {
+//  const getUser = (res, query) => {
   
-  userCollection.findOne(query, function (err, result){
-    if (err) throw err;
-    res.send({user: result})
-  })
-}
+//   userCollection.findOne(query, function (err, result){
+//     if (err) throw err;
+//     res.send({user: result})
+//   })
+// }
 
 
 
