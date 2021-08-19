@@ -1,19 +1,16 @@
 let service = require('../services');
 
 const getUser = (req, res) => {
-    console.log(req.body)
-    let user = req.body;
-    let query = {name: user.name, database: user.database};
-    console.log('controller: getUser');
-    service.userService.getUser(res, query)
+    service.userService.getUser(req, res)
 }
 
 const createUser = (req, res) => {
     service.userService.createUser(req, res);
 }
 
-
-
+const saveUserDatabase = (req, res) => {
+    service.userService.saveUserDatabase(req, res);
+}
 module.exports = {
-    getUser, createUser
+    getUser, createUser, saveUserDatabase
 }

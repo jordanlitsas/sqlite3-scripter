@@ -8,7 +8,7 @@ let bodyParser = require('body-parser')
 //routes
 let userRoutes = require('./routes/users');
 
-var port = 1000;
+var port = 3000;
 
 const { dirname } = require("path");
 
