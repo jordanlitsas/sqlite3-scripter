@@ -4,10 +4,10 @@ function getNewTableRow(table){
     let tableNumber = table.id.substring(5);
     let totalRowNumber;
     if (document.getElementById(table.id).childNodes.length == null){
-        totablRowNumber = 1;
+        totablRowNumber = 0;
     } 
     else {
-        document.getElementById(table.id).childNodes.length; 
+        totalRowNumber = document.getElementById(table.id).childNodes.length-1; //-1 to account for the header row 
     }
 
 

@@ -9,7 +9,7 @@ var tables = [];
 
 
 const addTable = () => {
-    if (typeof(tableCount) == 'undefined') {tableCount = 1};
+    if (typeof(tableCount) == 'undefined') {tableCount = 0};
 
     let sidebarNode = getTableListItemForSidebarHTML(tableCount);
     let newTableNode = getTableHTML(tableCount);
@@ -89,7 +89,7 @@ const addAttribute = () => {
 
 const test = () => {
     
-        console.log(currentFocus.id)
+        console.log(tableCount)
 
 
 }
@@ -101,7 +101,7 @@ const test = () => {
 
 
 
-export {tableCount, currentFocus, addAttribute, addTable, test}
+export {tableCount, currentFocus, addAttribute, addTable, test, tables}
 
 
 

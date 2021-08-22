@@ -13,8 +13,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
 //Global Variables
 var userInstance = {
   username: null,
+  databaseName: null,
   database: {
-      databaseName: null,
       tables: []
   }
 };
@@ -47,10 +47,6 @@ const saveDatabaseStateToUserInstance = () => {
     tablesToConvert.push(currentViewedTable);
   }
   
-
- 
-
-
   //loop over each table
   while (currentTableNumber < tableCount){
 
@@ -84,15 +80,18 @@ const saveDatabaseStateToUserInstance = () => {
 
 const saveDatabase = () => {
   saveDatabaseStateToUserInstance();
-  console.log(userInstance)
+  // console.log(userInstance)
     $.ajax({
       url: '/saveDatabase',
       contentType: 'application/json',
-      data: JSON.stringify(userInstance), //changed args
+      data: JSON.stringify(userInstance), 
       type: 'POST',
       success: function(result){
-        if (result.result == 200){
-          M.toast({html: `Table ${result.tableName} has been saved.`})
+        if (result.code == 400){
+          M.toast({html: `Database save has failed.`})
+        }
+        else if (result.code == 200){
+          M.toast({html: 'Your database has been saved.'})
         }
       }
     })    
@@ -101,45 +100,42 @@ const saveDatabase = () => {
   
 const  createDatabase = () => {
 
-    // let username = $('#username').val();
-    // let dbName = $('#database').val();
+    let name = $('#username').val();
+    let dbName = $('#database').val();
 
-    // userInstance.user.name = username;
-    // userInstance.user.database = dbName;
+   
+    let user = {name: name, database: dbName};
     
-    // $.ajax({
-    //   url: '/createDatabase',
-    //   contentType: 'application/json',
-    //   data: JSON.stringify(userInstance.user),
-    //   type: 'POST',
-    //   success: function(result){
-    //     if (result.error == 'used'){
-    //       M.toast({html: 'Name already taken.\nTry Again.'})
-    //     }
-    //     else { 
-    //       M.toast({html: 'User and database created.'})
-    //       userInstance.user = {
-    //         name: result.newUser.name,
-    //         database: result.newUser.database,
-    //         collectionID: result.newUser._id
-    //       }
+    $.ajax({
+      url: '/createDatabase',
+      contentType: 'application/json',
+      data: JSON.stringify(user),
+      type: 'POST',
+      success: function(result){
+        if (result.error == 'used'){
+          M.toast({html: 'Name already taken.\nTry Again.'})
+        }
+        else { 
+          M.toast({html: 'User and database created.'})
+          userInstance.username= name;
+          userInstance.databaseName = dbName;
           initialiseDatabaseView();
 
 
           
-    //     }
-    //   }
-    // })
+        }
+      }
+    })
 }
               
              
 const getDatabase = () => {
-    let username = $('#username').val();
+    let name = $('#username').val();
     let dbName = $('#database').val();
 
     var user = {
-      name: username, 
-      database: dbName
+      username: name, 
+      databaseName: dbName
     }
 
 
@@ -150,15 +146,15 @@ const getDatabase = () => {
       data: JSON.stringify(user),
       type: 'POST',
       success: function(result){
-        if (Object.keys(result).length === 1){
-          console.log(result)
-          userInstance.user = result.user;
-          userInstance.user.database = result.tables;
-          loadUserDatabase();
-        }
-        else {
-          M.toast({html: 'That username and database combination does not exist.'})
-        }
+        // if (Object.keys(result).length === 1){
+        //   console.log(result)
+        //   userInstance.user = result.user;
+        //   userInstance.user.database = result.tables;
+        //   loadUserDatabase();
+        // }
+        // else {
+        //   M.toast({html: 'That username and database combination does not exist.'})
+        // }
           
         }
         

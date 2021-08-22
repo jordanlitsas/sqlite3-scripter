@@ -5,39 +5,20 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const databaseSchema = new Schema( {
-
+    
     username: String,
-    database: {
-        databaseName: String,
-        tables: [{
-            tableName: String,
-            rows: [{
-                dataType: String,
-                attribute: String,
-                constraint: String
-            }]
+    databaseName: String,
+    tables: [{
+        tableName: String,
+        rows: [{
+            dataType: String,
+            attribute: String,
+            constraint: String
         }]
-    }
-
-} )
+    }]
+});
 
 const database = mongoose.model('database_schema', databaseSchema);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 setTimeout(() => {
@@ -49,17 +30,19 @@ setTimeout(() => {
 
 const createUser = (req, res) => {
 
+
     let user = new database ( {
         username: req.body.name,
+        databaseName: req.body.database,
         database: {
-            databaseName: req.body.database
+            tables: []
         }
     });
-  
+
     let query = {
         username: user.username,
-         database: {databaseName: user.database.databaseName}
-    };
+        databaseName: user.databaseName
+        };
 
     createUserIfDoesntExist(query, user, res);
     
@@ -83,44 +66,40 @@ const createUserIfDoesntExist = async (query, user, res) => {
 
 }
 
-
-
-
 const getUser = (req, res) => {
-    let userDetails = req.body;
+
+    let data = req.body;
     let query = {
-        name: user.name, 
-        database: user.database
+        username: data.username,
+         database: {
+             databaseName: data.databaseName
+        }
     };
 
-    userCollection.findOne(query, function (err, result){
-        if (err) throw err;
-        res.send({user: result})
-    })
+    console.log(query)
+    console.log(data)
+    database.find({username: 'final', database: {databaseName: 'final_database'}}, function(err, result){
+        res.send({final: result})
+        // if (result != null){
+        //     res.send({userInstance: result});
+        // }
+        // else { res.send({code: 400})};
+    });
 }
 
 
+//Query is user and db name, selects a unique document. Add table objects to document.
 const saveUserDatabase = (req, res) => {
-    let data = req.body
-    let user = data[0];
-    let table = data[1]
-  
-    let submission = {
-        'rows': [ {table} ]
-    }
-  
-    let tables = [submission];
-  
-    userCollection.updateOne(
-      { name: user.name},
-      {
-        $set: { 'tables': tables},
-        $currentDate: { lastModified: true }
-      }
-    );
-  
-  
-    res.send({result: 200, tableName: table.name});
+    let data = req.body;
+
+    let query = {username: data.username, databaseName: data.databaseName};
+    let update = {tables: data.database.tables};
+    
+    database.findOneAndUpdate(query, {$set: {tables: data.database.tables}}, {upsert: true}, function (err, result){
+        if (err) {res.send(500, {error: err})};
+        res.send({success: result})
+    });
+
 }
 
 
