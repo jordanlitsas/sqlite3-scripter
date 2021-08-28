@@ -6,19 +6,18 @@ let bodyParser = require('body-parser')
 
 
 //routes
-let userRoutes = require('./routes/users');
+let sqlGenerator = require('./routes/sqlGenerator');
 let projectRoutes = require('./routes/projects');
 
-var port = 8080;
+var port = 1010;
 
-const { dirname } = require("path");
 
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.json())
 app.use(express.static(__dirname + '/public'));
-app.use(userRoutes);
+app.use(sqlGenerator);
 app.use(projectRoutes);
 
 

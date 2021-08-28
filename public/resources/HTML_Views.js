@@ -211,7 +211,7 @@ function getDBMSView(){
                                             <li id = "new-table"><a>new table</a></li>
                                             <li id = "new-attribute"><a>new attribute</a></li>
                                             <li id = "save-database"><a>save</a></li>
-                                            <li id = "test"><a>test</a></li>
+                                            <li id = "generate-sql-script"><a>generate SQL script</a></li>
                                         </ul>
                                     </div>
                                 </nav>

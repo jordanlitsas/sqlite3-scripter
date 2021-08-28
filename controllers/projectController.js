@@ -10,6 +10,10 @@ const weatherApp = (res) => {
     service.projectService.weatherApp(res);
 }
 
+const sqlGenerator = (res) => {
+    service.projectService.sqlGenerator(res);
+}
+
 module.exports = {
-    mainProject, chessProject, weatherApp
+    mainProject, chessProject, weatherApp, sqlGenerator
 }

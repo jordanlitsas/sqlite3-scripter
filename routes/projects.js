@@ -6,17 +6,23 @@ var controllers = require('../controllers');
 
 
 
-router.get("/mainProject", function (req, res) {
-    controllers.projectController.mainProject(res)
+router.get("/projects/mainProject", function (req, res) {
+    controllers.projectController.mainProject(res);
 });
 
 
-router.get("/chessProject", function (req, res) {
-    controllers.projectController.chessProject(res)
+router.get("/projects/chessProject", function (req, res) {
+    controllers.projectController.chessProject(res);
 });
 
-router.get("/weatherApp", function(req, res) {
-    controllers.projectController.weaherApp(res)
+router.get("/projects/weatherApp", function(req, res) {
+    controllers.projectController.weatherApp(res);
 
 });
+
+router.get("/projects/sqlGenerator", function(req, res){
+    controllers.projectController.sqlGenerator(res);
+})
+
+
 module.exports = router;

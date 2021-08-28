@@ -1,4 +1,4 @@
 module.exports = {
-    userService:require('./userService'),
+    sqlGeneratorService:require('./sqlGeneratorService'),
     projectService:require('./projectService')
 }

@@ -9,6 +9,12 @@ const weatherApp = (res) => {
 
 }
 
+const sqlGenerator = (res) => {
+   res.redirect('/dbmsUserEntry.html');
+
+}
+
+
 module.exports = {
-    mainProject, chessProject, weatherApp
+    mainProject, chessProject, weatherApp, sqlGenerator
 }
