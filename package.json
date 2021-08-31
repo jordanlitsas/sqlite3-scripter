@@ -1,27 +1,29 @@
 {
-  "name": "sit725-2021-t2-prac5",
+  "name": "sit725-2021-t2-prac6",
   "version": "1.0.0",
-  "description": "prac5",
+  "description": "prac6",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --reporter spec",
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jordanlitsas/sit725-2021-t2-prac5.git"
+    "url": "git+https://github.com/jordanlitsas/sit725-2021-t2-prac6.git"
   },
   "author": "Jordan Litsas",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jordanlitsas/sit725-2021-t2-prac5/issues"
+    "url": "https://github.com/jordanlitsas/sit725-2021-t2-prac6/issues"
   },
-  "homepage": "https://github.com/jordanlitsas/sit725-2021-t2-prac5#readme",
+  "homepage": "https://github.com/jordanlitsas/sit725-2021-t2-prac6#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chai": "^4.3.4",
     "circular-json": "^0.5.9",
     "express": "^4.17.1",
     "json": "^11.0.0",
+    "mocha": "^9.1.0",
     "mongodb": "^4.1.0",
     "mongoose": "^5.13.7",
     "reload": "^3.2.0",

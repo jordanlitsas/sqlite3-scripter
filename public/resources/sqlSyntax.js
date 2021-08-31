@@ -1,5 +1,5 @@
 const createTable = () => {
-    let sql =   `CREATE TABLE IF NOT EXISTS ${tableName}(${rows})`;
+    let sql =   'CREATE TABLE IF NOT EXISTS';
     return sql;
 }
 

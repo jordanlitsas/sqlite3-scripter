@@ -30,8 +30,6 @@ setTimeout(() => {
 
 
 const createUser = (req, res) => {
-
-
     let user = new database ( {
         username: req.body.name,
         databaseName: req.body.database,
@@ -43,7 +41,8 @@ const createUser = (req, res) => {
     let query = {
         username: user.username,
         databaseName: user.databaseName
-        };
+    };
+
 
     createUserIfDoesntExist(query, user, res);
     
@@ -52,19 +51,18 @@ const createUser = (req, res) => {
 }
 
 
-const createUserIfDoesntExist = async (query, user, res) => {
+const createUserIfDoesntExist = (query, user, res) => {
     database.findOne(query, function(err, result){
-        if (result === null){
-            user.save(function(err){
-                if (err) {console.log('Error creating new user/database.')}
-                res.send({newUser: user});
-            })
-        }
+        if (result == null){
+            user.save();
+            res.status(200);
+            res.send({newUser: user});
+        } 
         else {
-            res.send({error: 'used'})
+            res.status(400);
+            res.send({result: 'used'})
         }
     });
-
 }
 
 const getUser = (req, res) => {
@@ -77,7 +75,14 @@ const getUser = (req, res) => {
 
     
     database.find(query, function(err, result){
-        res.send({doc: result})
+        if (typeof(result.doc) == 'undefined'){
+            res.status(400);
+            res.send();
+        }
+        else if (result.doc[0].username == query.username && result.doc[0].databaseName == query.databaseName){
+            res.status(200);
+            res.send({doc: result})
+        }
         
     });
 }
@@ -88,27 +93,36 @@ const saveUserDatabase = (req, res) => {
     let data = req.body;
 
     let query = {username: data.username, databaseName: data.databaseName};
-    let update = {tables: data.tables};
-    let tables = data.tables;
-    // database.findOneAndUpdate(query, {$set: {tables: data.tables}}, {upsert: true}, function (err, result){
-    //     if (err) {res.send(500, {error: err})};
-    //     res.send({success: result})
-    // });
+
+    database.find(query, function(err, result){
+        if (typeof(result.doc) == 'undefined'){
+            res.status(400);
+            res.send();
+        }
+    })
+
+    database.findOneAndUpdate(query, {$set: {tables: data.tables}}, {upsert: true, new: true}, function (err, result){
+        if (err) {res.send(500, {error: err})};
+       
+        res.status(200);
+        res.send({doc: result})
+
+        
+    });
 
 
     
 
-    console.log(tables)
-    res.send({result: tables})
+
 }
 
 const generateSqlScript = (req, res) => {
     let userInstance = req.body;
+   
     let script = sql.getScript(userInstance);
 
-    if (script){
-        res.send({result: script})
-    }
+    res.send({result: script})
+    
 }
 
 
