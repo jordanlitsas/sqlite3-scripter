@@ -75,11 +75,11 @@ const getUser = (req, res) => {
 
     
     database.find(query, function(err, result){
-        if (typeof(result.doc) == 'undefined'){
+        if (typeof(result[0]) == 'undefined'){
             res.status(400);
             res.send();
         }
-        else if (result.doc[0].username == query.username && result.doc[0].databaseName == query.databaseName){
+        else if (result[0].username == query.username && result[0].databaseName == query.databaseName){
             res.status(200);
             res.send({doc: result})
         }
@@ -94,18 +94,13 @@ const saveUserDatabase = (req, res) => {
 
     let query = {username: data.username, databaseName: data.databaseName};
 
-    database.find(query, function(err, result){
-        if (typeof(result.doc) == 'undefined'){
-            res.status(400);
-            res.send();
-        }
-    })
+   
 
     database.findOneAndUpdate(query, {$set: {tables: data.tables}}, {upsert: true, new: true}, function (err, result){
         if (err) {res.send(500, {error: err})};
-       
+        
         res.status(200);
-        res.send({doc: result})
+        res.send({doc: result, userInstance: data})
 
         
     });

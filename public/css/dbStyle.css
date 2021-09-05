@@ -12,6 +12,8 @@ body{
     justify-content:center;
 }
 
+
+
 nav{
     margin-bottom:0px !important;
 }
@@ -37,10 +39,6 @@ li:hover{
 
 #header{
   text-align: center;
-}
-
-nav.blue-grey{
-    margin-bottom: 50px !important;
 }
 
 
@@ -78,9 +76,7 @@ div.row{
 nav.blue-grey{
     margin:0px !important;
 }
-#top-nav{
-    margin-bottom: 30px !important;
-}
+
 
 nav.blue-grey.bottom-nav{
     position: fixed;

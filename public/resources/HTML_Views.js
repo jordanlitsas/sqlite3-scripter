@@ -1,15 +1,16 @@
+import {userInstance, captureTables} from "../js/env.js"
+
 function getNewTableRow(table){
     
 
     let tableNumber = table.id.substring(5);
     let totalRowNumber;
-    if (document.getElementById(table.id).childNodes.length == null){
-        totablRowNumber = 0;
-    } 
-    else {
-        totalRowNumber = document.getElementById(table.id).childNodes.length-1; //-1 to account for the header row 
+    try {
+        totalRowNumber = document.getElementById(table.id).childElementCount-1;
     }
-
+    catch{
+        totalRowNumber = 0;
+    }
 
 
     let rowTR = document.createElement('tr');
@@ -19,9 +20,7 @@ function getNewTableRow(table){
     let constraintTD = document.createElement('td');
 
     let placeholderDataType = document.createElement('option');
-    placeholderDataType.text = 'select one';
     let placeholderConstraint = document.createElement('option');
-    placeholderConstraint.text = 'select one';
 
     let dataTypeInput = document.createElement('select');
 
@@ -66,7 +65,7 @@ function getNewTableRow(table){
 
 
     let constraintInput = document.createElement('select');
-
+    constraintInput.id = `table${tableNumber}constraint${totalRowNumber}`;
     
 
     let notNullOpt = document.createElement('option');
@@ -91,6 +90,10 @@ function getNewTableRow(table){
 
     let fkOpt = document.createElement('option');
     fkOpt.value = 'FOREIGN KEY';
+    fkOpt.classList.add("modal-trigger");
+    fkOpt.classList.add("btn");
+    fkOpt.href = "#modal1";
+
     let fkOptTextNode = document.createTextNode('FOREIGN KEY');
     fkOpt.appendChild(fkOptTextNode);
 
@@ -102,6 +105,9 @@ function getNewTableRow(table){
         constraintInput.appendChild(constraintOptions[i]);
     }
 
+    constraintInput.addEventListener('change', function(event){
+        modal(constraintInput, event);
+    })
 
     dataTypeTD.appendChild(dataTypeInput);
     attributeTD.appendChild(attributeInput);
@@ -117,9 +123,70 @@ function getNewTableRow(table){
         
 }
 
+const modal = (constraintInput, event) => {
 
+    if (event.target.value == "FOREIGN KEY"){
+        
+        let constraint = event.target;
 
+        let pkAndTableName = capturePrimaryKeyAndTableName(constraint);
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+        instances[0].open();
+        
+        
 
+    }
+}
+    
+function capturePrimaryKeyAndTableName(constraint){
+    captureTables();
+    let tables = userInstance.tables;
+
+    let pkAndNames = [];
+
+    tables.forEach(table => {
+        table.rows.forEach(row => {
+            if (row.constraint == "PRIMARY KEY"){
+                if (row.attribute.length > 0){
+                    let obj = {tableName: table.tableName, pk: row.attribute};
+                    pkAndNames.push(obj);
+                }
+               
+            }
+        })
+    })
+    document.getElementById("select1").innerHTML = '';
+    pkAndNames.forEach(pkAndNameObj => {
+        
+        let opt = document.createElement('option');
+        let optText = document.createTextNode(`${pkAndNameObj.tableName}(${pkAndNameObj.pk})`);
+        opt.appendChild(optText);
+
+       
+        document.getElementById("select1").appendChild(opt)
+    })
+
+    document.getElementById("fkModalSubmit").addEventListener("click", function(){
+        let selectedReference = $("#select1").val();
+        
+
+        let NumberForMaxSubstringForTableName = selectedReference.indexOf("(")
+        let tableName = selectedReference.substring(0, NumberForMaxSubstringForTableName);
+
+        let attributeStartIndex = selectedReference.indexOf("(")+1
+        let attributeEndIndex = selectedReference.indexOf(")");
+        let primaryKeyAttribute = selectedReference.substring(attributeStartIndex, attributeEndIndex)
+
+        
+    
+
+        let fkOpt = constraint.childNodes[5];
+        fkOpt.innerHTML = `REFERENCES ${tableName}(${primaryKeyAttribute})`;
+        fkOpt.value = `REFERENCES ${tableName}(${primaryKeyAttribute})`;
+         
+    })
+}
 
 function getTableListItemForSidebarHTML(tableCount){
     let li = document.createElement('li');
@@ -187,8 +254,28 @@ function getDBMSView(){
                     <div class = "container-fluid">
                 
                         <div id = "board">
-                        
-                
+
+                        <div id="fkModal" class="modal" styled = "display:none">
+                            <div class="modal-content">
+                                <h4>Identify Foreign Key Reference</h4>
+
+                                <div class = "row">
+                                    <div class = "col s12"><select id = "select1" style = "width: 100%"></select></div>
+                                </div>
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <a  href = "#" id = "fkModalSubmit" class="modal-close waves-effect waves-green blue-grey btn-flat" style = "width:100%; text-align: center !important; color: white;">Submit</a>
+                            </div>
+
+                        </div>
+                                <div class = "row">
+                                    <div class = "col s1">
+                                        <span id = "validator">
+                                            Not Valid
+                                        </span>
+                                    </div>
+                                </div>
                                 <div class = "row" >
                                         <div class = "col s1" id = "sidenav">
                                             <nav class = "blue-grey">

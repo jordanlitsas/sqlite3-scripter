@@ -14,60 +14,59 @@ const getScript = (user) => {
 
 
     //table names
-    let sql_tables = [];
+    let sql_entities = [];
     userInstance.tables.forEach(userInstanceTable => {
-        let sql_createTable = createTable(userInstanceTable);
-        sql_tables.push(sql_createTable)
+
+        let name = userInstanceTable.tableName;
+        let script = "CREATE TABLE IF NOT EXISTS " + name;
+        let attributes = "";
+
+
+        let rowCounter = 0;
+        
+        //for each row
+        while (rowCounter < userInstanceTable.rows.length){
+
+            if (constraint.includes("FOREIGN KEY")){
+                attributes += `FOREIGN KEY ${userInstancetable.rows[rowCounter].attribute} REFERENCES `
+                sql_entities.push(constraint)
+
+            }
+            //at minimum, datatype and attribute name are required -> add to attributes string
+            attributes += `${userInstanceTable.rows[rowCounter].dataType} ${userInstanceTable.rows[rowCounter].attribute}`;
+           
+            let constraint = userInstanceTable.rows[rowCounter].constraint;
+
+            //If there is a constraint
+           if (constraint != ""){
+
+
+            //if it's the last row, end the loop after adding constraint
+            if (rowCounter == userInstanceTable.rows.length-1){
+                attributes += ` ${constraint}`
+                break;
+            }
+                //if it's not the last row, add a comma after attribute
+                attributes += ` ${constraint}, `;
+
+           rowCounter++;
+        }}
+
+        
+        if (attributes != ""){
+            script = script + "(" + attributes + ");";
+        }
+
+        
+        sql_entities.push(script);
     });
 
-    //rows
-    let sql_rows = [];
    
+ 
 
-    userInstance.tables.forEach(table => {
-        let rows = new Array();
-
-        table.rows.forEach(row => {
-        let dataType, attribute, constraint;
-        dataType = row.dataType;
-        attribute = row.attribute;
-        constraint = row.constraint;
-
-        row = [dataType, attribute, constraint];
-        rows.push(row);
-        })
-        
-        sql_rows.push(rows);
-    })
-
-
-    convertArrayToSqlSyntax(sql_tables, sql_rows);
-
-    let result = {"tables": sql_tables, "rows": sql_rows}
-
-    return result;
-    
-
-    
-    
+    return sql_entities;    
 } 
 
 
-const convertArrayToSqlSyntax = (sql_tables, sql_rows) => {
-    let script = "";
-    sql_tables.forEach(table => {
-        script += table;
-     
-    })
-}
-
-const createTable = (table) => {
-    let tableName = table.tableName;
-    let sql_createTable = sqlSyntax.createTable();
-    sql_createTable = sql_createTable + " " + tableName;
-    return sql_createTable;
-
-    
-}
 
 module.exports = {getScript}

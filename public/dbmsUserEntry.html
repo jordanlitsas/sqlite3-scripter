@@ -13,8 +13,21 @@
     </head>
     <body id = "demo">
 
+
+
+
         <div class = "row" style = "height: 10vh">
-          <button type = "button"><a href = "index.html">Home</a></button>
+          <a class="btn modal-trigger" href="#modal1">Modal</a>
+          <div id="modal1" class="modal">
+            <div class="modal-content">
+              <h4>Modal Header</h4>
+              <p>A bunch of text</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            </div>
+          </div>
+
         </div>
         <div id = "login-wrapper">
             <div  class="row">
@@ -62,5 +75,6 @@
 
         <script type = "module" src = "./js/dbmsUserEntry.js"></script>
         <script type = "module" src = "./js/env.js"></script>
+        
             </body>
             </html>

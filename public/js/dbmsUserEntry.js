@@ -43,6 +43,7 @@ const changeTableView = (sidebarNode) => {
         //iterates through tables to find the element with id equal to the number at end of id for the sidebar nav link that was clicked.
         //click sidebar link with id equal to 'tableSidebarListItem2', loop selects table with id equal to 'table2'
         let tableToView;
+
         let i = 0;
         for (i; i < tables.length; i++){
             if (tables[i].id.substring(5) == tableNumber){
@@ -58,13 +59,24 @@ const changeTableView = (sidebarNode) => {
             let oldTable = document.getElementById('main').firstElementChild;
             document.getElementById('main').removeChild(oldTable);
             document.getElementById('main').appendChild(tableToView);
-            tables.push(oldTable);
+
+
+            //Handles tables having two copies of one table when a user logs in rather than creates a new database.
+            let oldTableAlreadyInTables = false;
+            tables.forEach(table => {
+                if (table == oldTable){
+                    oldTableAlreadyInTables = true;
+                }
+            })
+
+            if (!oldTableAlreadyInTables){
+                tables.push(oldTable);
+            }
         }
         
         currentFocus = tableToView;
     
-    
-
+  
 
 
 }
@@ -85,15 +97,10 @@ const addAttribute = () => {
 
 
 
-
-
-const test = () => {
-    
-        console.log(tableCount)
-
-
+export function updateDBManager(dbRetrievedTables){
+    tables = dbRetrievedTables;
+    tableCount = tables.length;
 }
-   
 
 
 
@@ -101,7 +108,7 @@ const test = () => {
 
 
 
-export {tableCount, currentFocus, addAttribute, addTable, test, tables}
+export {tableCount, currentFocus, addAttribute, addTable, tables, changeTableView}
 
 
 
