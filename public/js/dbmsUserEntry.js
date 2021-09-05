@@ -106,8 +106,6 @@ export function updateDBManager(dbRetrievedTables){
 
 
 
-
-
 export {tableCount, currentFocus, addAttribute, addTable, tables, changeTableView}
 
 

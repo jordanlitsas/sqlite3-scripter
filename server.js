@@ -1,7 +1,10 @@
 let express = require("express");
 let app = express();
-let dbConnecton = require('./dbConnection');
-let http = require('http').createServer(app);
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
 let bodyParser = require('body-parser')
 
 
@@ -9,6 +12,7 @@ let bodyParser = require('body-parser')
 let sqlGenerator = require('./routes/sqlGenerator');
 let projectRoutes = require('./routes/projects');
 const services = require("./services");
+
 
 var port = 1010;
 
@@ -23,8 +27,24 @@ app.use(projectRoutes);
 
 
 
-http.listen(port,()=>{
-  console.log("Listening on port ", port);
+
+//sockets
+io.on('connection', (socket) => {
+  console.log('user connected');
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  socket.on('autoSave', (message) => {
+      services.sqlGeneratorService.toggleAutoSave(message);
+  })
+});
+
+
+
+server.listen(8080, () => {
+  console.log('listening on *:8080');
 });
 
 

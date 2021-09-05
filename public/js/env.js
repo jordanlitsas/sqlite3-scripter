@@ -17,6 +17,7 @@ var userInstance = {
   tables: []
 };
 
+let autoSaveToggle = false;
 
 
 const generateSqlScript = () => {
@@ -271,22 +272,56 @@ const getTableObj = () =>{
     };
 }
 
-const getRowObj = () => {
-  return {
-    dataType: null,
-    attribute: null,
-    constraint: null
-  };
+
+
+
+
+var socket = io();
+let autoSaveTimer;
+
+const autoSave = () => {
+  let message = {};
+  
+  if (!autoSaveToggle){
+    M.toast({html: `Autosave has been turned on.`})
+
+    autoSaveToggle = true;
+
+    message.toggle = autoSaveToggle;
+
+   
+    autoSaveTimer = setInterval(() => {
+      captureTables();
+      message.state = userInstance;
+      socket.emit('autoSave', message);
+    
+    }, 60000);
+
+  } else {
+    M.toast({html: `Autosave has been turned off`})
+
+    autoSaveToggle = false;
+    message.toggle = autoSaveToggle;
+    clearInterval(autoSaveTimer);
+    socket.emit('autoSave', message)
+  }
+
+
+
+  
 }
+
+
+
 const initialiseDatabaseView = () => {
   document.querySelector('body').innerHTML = getDBMSView();
   document.getElementById('new-table').addEventListener('click', addTable);
   document.getElementById('new-attribute').addEventListener('click', addAttribute);
   document.getElementById('save-database').addEventListener('click', saveDatabase);
   document.getElementById('generate-sql-script').addEventListener('click', generateSqlScript);
- 
-
+  document.getElementById('auto-save').addEventListener('click', autoSave);
 }
+
 
 
 

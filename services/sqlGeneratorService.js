@@ -1,7 +1,6 @@
 let client = require("../dbConnection");
 let sql = require("../public/js/jsonToSql")
 let userCollection;
-
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
@@ -26,6 +25,13 @@ setTimeout(() => {
     userCollection = client.mongoClient.db("db").collection('users');
 }, 2000)
 
+
+
+const toggleAutoSave = (message) => {
+    if (message.toggle){
+        autoSave(message.state);
+    }
+}
 
 
 
@@ -88,27 +94,23 @@ const getUser = (req, res) => {
 }
 
 
+const autoSave = (userInstance) => {
+    let query = {username: userInstance.username, databaseName: userInstance.databaseName};
+    database.findOneAndUpdate(query, {$set: {tables: userInstance.tables}}, {upsert: true, new: true}, function (err, result){
+        
+});
+}
+
 //Query is user and db name, selects a unique document. Add table objects to document.
 const saveUserDatabase = (req, res) => {
     let data = req.body;
-
     let query = {username: data.username, databaseName: data.databaseName};
 
-   
-
     database.findOneAndUpdate(query, {$set: {tables: data.tables}}, {upsert: true, new: true}, function (err, result){
-        if (err) {res.send(500, {error: err})};
-        
+        if (err) {res.send(500, {error: err})};       
         res.status(200);
         res.send({doc: result, userInstance: data})
-
-        
     });
-
-
-    
-
-
 }
 
 const generateSqlScript = (req, res) => {
@@ -122,5 +124,5 @@ const generateSqlScript = (req, res) => {
 
 
 module.exports = {
-    createUser, getUser, saveUserDatabase, generateSqlScript
+    createUser, getUser, saveUserDatabase, generateSqlScript, toggleAutoSave
 }

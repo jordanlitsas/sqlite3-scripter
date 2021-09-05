@@ -299,6 +299,7 @@ function getDBMSView(){
                                             <li id = "new-attribute"><a>new attribute</a></li>
                                             <li id = "save-database"><a>save</a></li>
                                             <li id = "generate-sql-script"><a>generate SQL script</a></li>
+                                            <li id = "auto-save"><a>toggle auto-save</a></li>
                                         </ul>
                                     </div>
                                 </nav>
