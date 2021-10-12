@@ -17,6 +17,9 @@ body{
   min-height:100vh; 
   margin:0; 
   position:relative;
+  background-color: #39464e;
+
+
 }
 
 
@@ -61,3 +64,16 @@ svg:hover{
   margin-top: 20px !important;
 }
 
+p{
+  color: #fff;
+}
+
+.dark-blue{
+  background-color: #293241 !important;
+}
+
+.btn-link{
+   background-color: #98c1d9 !important;
+   color: #39464e !important;
+
+}

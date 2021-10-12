@@ -10,8 +10,6 @@ const weatherApp = (res) => {
 }
 
 const sqlGenerator = (res) => {
-   res.redirect('/dbmsUserEntry.html');
-
 }
 
 

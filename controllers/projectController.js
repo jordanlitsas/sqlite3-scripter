@@ -11,7 +11,8 @@ const weatherApp = (res) => {
 }
 
 const sqlGenerator = (res) => {
-    service.projectService.sqlGenerator(res);
+    // service.projectService.sqlGenerator(res);
+    res.redirect('/dbmsUserEntry.html');
 }
 
 module.exports = {

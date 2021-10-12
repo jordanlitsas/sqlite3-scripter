@@ -1,4 +1,4 @@
-import {getDBMSView, getTableHTML, getTableListItemForSidebarHTML, getNewTableRow} from '../resources/HTML_Views.js'
+import {getDBMSView, getTableHTML, getTableListItemForSidebarHTML, getNewTableRow} from './HTML_Views.js'
 import {updateDBManager, tableCount, currentFocus, addTable, addAttribute, tables, changeTableView} from './dbmsUserEntry.js'
 
 window.addEventListener('DOMContentLoaded', (event) => {
@@ -86,11 +86,14 @@ const getDatabase = () => {
     let name = $('#username').val();
     let dbName = $('#database').val();
 
+    
     var user = {
       username: name, 
       databaseName: dbName
     }
 
+    userInstance.username = name;
+    userInstance.databaseName = dbName;
 
     $.ajax({
       async: false,
@@ -99,8 +102,7 @@ const getDatabase = () => {
       data: JSON.stringify(user),
       type: 'POST',
       success: function(result){
-          let returnedUserInstance = result.doc[0];
-          if (captureUserInstance(returnedUserInstance)){
+          if (captureUserInstance(result)){
             loadUserInstance();
           }
         },
@@ -145,10 +147,13 @@ const loadUserInstance = () => {
  
 
 const convertTableJsonToHtml = () => {
-  let htmlTables = [];
+  
+  
+    let htmlTables = [];
 
   
   let tableCounter = 0;
+  
   for (tableCounter; tableCounter < userInstance.tables.length; tableCounter++){
     let tableHtml = getTableHTML(tableCounter);
     let rowCounter = 0;
@@ -158,6 +163,19 @@ const convertTableJsonToHtml = () => {
       tableRowHtml.childNodes[0].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].dataType; 
       tableRowHtml.childNodes[1].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].attribute;
       tableRowHtml.childNodes[2].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].constraint;
+
+
+      // if constraint contains references, handle accordingly...
+      if (userInstance.tables[tableCounter].rows[rowCounter].constraint.includes("REFERENCES")){
+        let fk = document.createElement('option');
+        fk.value = 'FOREIGN KEY';
+        let fkOptTextNode = document.createTextNode(`${userInstance.tables[tableCounter].rows[rowCounter].constraint}`);
+        fk.appendChild(fkOptTextNode)
+        tableRowHtml.childNodes[2].firstElementChild.appendChild(fk);
+
+        tableRowHtml.childNodes[2].firstElementChild.selectedIndex =  tableRowHtml.childNodes[2].firstElementChild.options.length;
+      }
+      
       tableHtml.appendChild(tableRowHtml);
 
     }    
@@ -167,6 +185,9 @@ const convertTableJsonToHtml = () => {
   }
 
 return htmlTables;
+  
+  
+  
   
 
 }
@@ -237,7 +258,6 @@ const captureTables = () => {
       row.attribute = rowElement.childNodes[1].firstElementChild.value
     
       row.constraint = rowElement.childNodes[2].firstElementChild.value
-      console.log(row.constraint)
       
       
       table.rows.push(row); //push unique row object into table object
@@ -248,12 +268,6 @@ const captureTables = () => {
 
 
     userInstance.tables.push(table);
-
-    // try {userInstance.tables.push(table);} //push completed table object into collection of tables}
-    // catch{
-    //   userInstance.tables = new Array();
-    //   userInstance.tables[0] = table;
-    // }
     currentTableNumber++;
     currentRowNumber = 1; //if you forget to reset nested loop's counter again, and spend an hour scratching your head like an idiot, you should go back to working in kitchens.
     
@@ -295,7 +309,7 @@ const autoSave = () => {
       message.state = userInstance;
       socket.emit('autoSave', message);
     
-    }, 60000);
+    }, 3000);
 
   } else {
     M.toast({html: `Autosave has been turned off`})

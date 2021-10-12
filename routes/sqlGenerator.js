@@ -15,6 +15,7 @@ router.post('/createDatabase', (req, res) => {
 })
 
 router.post('/saveDatabase', (req, res) => {
+    console.log('....')
     controllers.sqlGeneratorController.saveUserDatabase(req, res);  
 });
 

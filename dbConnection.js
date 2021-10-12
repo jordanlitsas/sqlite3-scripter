@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = `mongodb+srv://prac4-pw:prac4-pw@cluster0.gwxoy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://prac4-pw:prac4-pw@cluster0.gwxoy.mongodb.net/dev?retryWrites=true&w=majority`;
 const mongoClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let userCollection;
@@ -21,7 +21,12 @@ mongoClient.connect((err, db) => {
   exports.mongoClient = mongoClient;
 
 
-mongoose.connect(uri);
+mongoose.connect(uri, function (err, db){
+  if (err){
+    console.log(err)
+  }
+  
+});
 
 const db = mongoose.connection;
 

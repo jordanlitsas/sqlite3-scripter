@@ -1,8 +1,16 @@
-import {userInstance, captureTables} from "../js/env.js"
+import {userInstance, captureTables} from "./env.js"
+
+
+function getFK(fTextNode){
+    let fk = document.createElement('option');
+    fk.value = 'fkReference';
+    let textNode = document.createTextNode(fTextNode);
+    fk.appendChild(textNode);
+    return fk;
+}
+
 
 function getNewTableRow(table){
-    
-
     let tableNumber = table.id.substring(5);
     let totalRowNumber;
     try {
@@ -23,7 +31,7 @@ function getNewTableRow(table){
     let placeholderConstraint = document.createElement('option');
 
     let dataTypeInput = document.createElement('select');
-
+    
     let nullOpt = document.createElement('option');
     nullOpt.value = 'NULL';
     let nullOptTextNode = document.createTextNode('NULL');
@@ -88,16 +96,8 @@ function getNewTableRow(table){
     let pkOptTextNode = document.createTextNode('PRIMARY KEY');
     pkOpt.appendChild(pkOptTextNode);
 
-    let fkOpt = document.createElement('option');
-    fkOpt.value = 'FOREIGN KEY';
-    fkOpt.classList.add("modal-trigger");
-    fkOpt.classList.add("btn");
-    fkOpt.href = "#modal1";
 
-    let fkOptTextNode = document.createTextNode('FOREIGN KEY');
-    fkOpt.appendChild(fkOptTextNode);
-
-    let constraintOptions = [placeholderConstraint, notNullOpt, uniqueOpt, checkOpt, pkOpt, fkOpt];
+    let constraintOptions = [placeholderConstraint, notNullOpt, uniqueOpt, checkOpt, pkOpt];
 
     //add data types to select
     i = 0;
@@ -105,41 +105,84 @@ function getNewTableRow(table){
         constraintInput.appendChild(constraintOptions[i]);
     }
 
-    constraintInput.addEventListener('change', function(event){
-        modal(constraintInput, event);
-    })
+    let fkRadioLabel = document.createElement('label');
+
+    let fkRadioLabelText = document.createElement('span');
+    fkRadioLabelText.innerHTML = "foreign key";
+
+    let fkCheckboxInput = document.createElement('input');
+    fkCheckboxInput.type = "checkbox";
+    fkCheckboxInput.classList += "with-gap";
+    fkCheckboxInput.value = 'FOREIGN KEY';
+    fkCheckboxInput.classList.add("modal-trigger");
+    fkCheckboxInput.href = "#modal1";
+   
+
+    
+
+    fkRadioLabel.appendChild(fkCheckboxInput);
+    fkRadioLabel.appendChild(fkRadioLabelText);
+
+
 
     dataTypeTD.appendChild(dataTypeInput);
     attributeTD.appendChild(attributeInput);
     constraintTD.appendChild(constraintInput);
+    constraintTD.appendChild(fkRadioLabel);
 
     rowTR.appendChild(dataTypeTD);
     rowTR.appendChild(attributeTD);
     rowTR.appendChild(constraintTD);
 
+    constraintTD.classList += "row valign-wrapper";
+    constraintInput.classList += "col s10";
+    fkRadioLabel.classList += "col s2";
+
+    dataTypeTD.classList += "valign-wrapper";    
+
+    fkCheckboxInput.onclick = function(){
+        let constraintSelect = fkCheckboxInput.parentElement.parentElement.firstElementChild;
+
+        if (fkCheckboxInput.checked == true){
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems);
+            instances[0].open();
+            setModalEventListener(constraintSelect)
+
+            capturePrimaryKeyAndTableName(fkCheckboxInput);
+        }
+        else {
+            constraintSelect.removeChild(constraintSelect.childNodes[5]);
+        }
+    }
     return rowTR;
-
-
         
 }
 
-const modal = (constraintInput, event) => {
+function setModalEventListener(constraintSelect){
+    document.getElementById("fkModalSubmit").onclick = function(){
 
-    if (event.target.value == "FOREIGN KEY"){
-        
-        let constraint = event.target;
+        let selectedReference = $("#table-and-pk-for-fk").val();
 
-        let pkAndTableName = capturePrimaryKeyAndTableName(constraint);
-        var elems = document.querySelectorAll('.modal');
-        var instances = M.Modal.init(elems);
-        instances[0].open();
-        
-        
+        let NumberForMaxSubstringForTableName = selectedReference.indexOf("(")
+        let tableName = selectedReference.substring(0, NumberForMaxSubstringForTableName);
 
+        let attributeStartIndex = selectedReference.indexOf("(")+1
+        let attributeEndIndex = selectedReference.indexOf(")");
+        let primaryKeyAttribute = selectedReference.substring(attributeStartIndex, attributeEndIndex)
+
+        let fkOpt = document.createElement('option');
+        let fkTextNode = document.createTextNode(`${constraintSelect.value} REFERENCES ${tableName}(${primaryKeyAttribute})`);
+
+        fkOpt.appendChild(fkTextNode)
+        constraintSelect.appendChild(fkOpt)
+        constraintSelect.selectedIndex = 5;
     }
 }
+
+
     
-function capturePrimaryKeyAndTableName(constraint){
+function capturePrimaryKeyAndTableName(){
     captureTables();
     let tables = userInstance.tables;
 
@@ -156,47 +199,32 @@ function capturePrimaryKeyAndTableName(constraint){
             }
         })
     })
-    document.getElementById("select1").innerHTML = '';
+    document.getElementById("table-and-pk-for-fk").innerHTML = '';
     pkAndNames.forEach(pkAndNameObj => {
         
         let opt = document.createElement('option');
         let optText = document.createTextNode(`${pkAndNameObj.tableName}(${pkAndNameObj.pk})`);
-        opt.appendChild(optText);
+        opt.appendChild(optText);Ta
 
        
-        document.getElementById("select1").appendChild(opt)
+        document.getElementById("table-and-pk-for-fk").appendChild(opt)
     })
 
-    document.getElementById("fkModalSubmit").addEventListener("click", function(){
-        let selectedReference = $("#select1").val();
-        
-
-        let NumberForMaxSubstringForTableName = selectedReference.indexOf("(")
-        let tableName = selectedReference.substring(0, NumberForMaxSubstringForTableName);
-
-        let attributeStartIndex = selectedReference.indexOf("(")+1
-        let attributeEndIndex = selectedReference.indexOf(")");
-        let primaryKeyAttribute = selectedReference.substring(attributeStartIndex, attributeEndIndex)
-
-        
-    
-
-        let fkOpt = constraint.childNodes[5];
-        fkOpt.innerHTML = `REFERENCES ${tableName}(${primaryKeyAttribute})`;
-        fkOpt.value = `REFERENCES ${tableName}(${primaryKeyAttribute})`;
-         
-    })
 }
 
 function getTableListItemForSidebarHTML(tableCount){
     let li = document.createElement('li');
     li.id = `tableSidebarListItem${tableCount}`;
+    li.classList.add('dark-grey')
+    // li.classList.add('table-name-input');
 
     let tableNameInput = document.createElement('input');
     tableNameInput.placeholder = `table ${tableCount}`;
     tableNameInput.id = `tableNameInput${tableCount}`;
-
+    tableNameInput.classList.add('table-name-input');
     li.appendChild(tableNameInput);
+
+   
     return li;
 
 
@@ -241,7 +269,7 @@ function getTableHTML(tableCount){
 
 
 function getDBMSView(){
-    return `<nav class = "blue-grey" id = "top-nav">
+    return `<nav class = "dark-grey" id = "top-nav">
                     <div class = "top-nav">
                         <ul>
                             <li><a href = "./index.html">Home</a></li>
@@ -260,28 +288,27 @@ function getDBMSView(){
                                 <h4>Identify Foreign Key Reference</h4>
 
                                 <div class = "row">
-                                    <div class = "col s12"><select id = "select1" style = "width: 100%"></select></div>
+                                    <div class = "col s12">
+                                        <select id = "table-and-pk-for-fk" style = "width: 100%"></select>
+                                    </div>
                                 </div>
                             </div>
                             
                             <div class="modal-footer">
-                                <a  href = "#" id = "fkModalSubmit" class="modal-close waves-effect waves-green blue-grey btn-flat" style = "width:100%; text-align: center !important; color: white;">Submit</a>
+                                <a  href = "#" id = "fkModalSubmit" class="modal-close waves-effect waves-green dark-grey btn-flat" style = "width:100%; text-align: center !important; color: white;">Submit</a>
                             </div>
 
                         </div>
                                 <div class = "row">
                                     <div class = "col s1">
-                                        <span id = "validator">
-                                            Not Valid
-                                        </span>
+                                        <span id = "last-auto-save-time-stamp"></span>
                                     </div>
                                 </div>
                                 <div class = "row" >
                                         <div class = "col s1" id = "sidenav">
-                                            <nav class = "blue-grey">
-                                                <ul id = "table-tabs">
-                                                    <li  href = "#"><a>ERD</a></li>
-                
+                                            <nav class = "dark-grey">
+                                                <ul id = "table-tabs">     
+                                                <li style = "font-size: 16px; text-align:center !important; width: 100%;">Tables</li>           
                                                 </ul>
                 
                                             </nav>
@@ -292,7 +319,7 @@ function getDBMSView(){
                                     
                                 </div>
                                 
-                                <nav class = "blue-grey bottom-nav">
+                                <nav class = "dark-grey bottom-nav">
                                     <div  id = "bottom-control">
                                         <ul id = "table-tabs">
                                             <li id = "new-table"><a>new table</a></li>
@@ -312,4 +339,4 @@ function getDBMSView(){
                 `;
 }
 
-export {getDBMSView, getTableHTML, getNewTableRow, getTableListItemForSidebarHTML}
+export {getDBMSView, getTableHTML, getNewTableRow, getTableListItemForSidebarHTML, getFK}

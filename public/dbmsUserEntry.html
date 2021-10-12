@@ -12,23 +12,33 @@
 
     </head>
     <body id = "demo">
+      <div class = "row">
+        <nav class = "dark-grey">
+          <div class = "top-nav">
+            <ul>
+              <li><a href = "./index.html">Home</a></li>
+              <li><a href = "#">About</a></li>
+              <li><a href = "#">Contact</a></li> 
+            </ul>
+           </div>
+          </nav>
+      </div>
+    
 
-
-
-
-        <div class = "row" style = "height: 10vh">
-          <a class="btn modal-trigger" href="#modal1">Modal</a>
-          <div id="modal1" class="modal">
-            <div class="modal-content">
-              <h4>Modal Header</h4>
-              <p>A bunch of text</p>
+      <div class = "row" style = "height:4vh"></div>
+        <div class = "row" >
+            <div class = "col s4"></div>
+            <div class = "col s4">
+                <h4>Sqlite3 Database Generator</h4>
+                <p>This app allows a user to create a sqlite3 script by utilising an intuitive ERD-like interface.</p>
+                <p>You're able to save and resume your work, and ultimately generate a text file containing the sql syntax to create your database.</p>
+                <p>This tool allows you to design your relational database, and generate a script from that design.</p>
             </div>
-            <div class="modal-footer">
-              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-            </div>
-          </div>
+            <div class = "col s4"></div>
 
         </div>
+
+        <div class = "row" style = "height: 1vh"></div>
         <div id = "login-wrapper">
             <div  class="row">
                 <div class = "col s4"></div>
@@ -37,7 +47,7 @@
 
                     <div class="row">
                       <div class="input-field col s12">
-                        <i class="material-icons prefix">account_circle</i>
+                        <i class="material-icons prefix icon-white">account_circle</i>
                         <input type="text" name = "username" id = "username">
                         <label for="email" data-error="wrong" data-success="right">name</label>
                       </div>
@@ -45,7 +55,7 @@
 
                     <div class="row">
                       <div class="input-field col s12">
-                        <i class="material-icons prefix">lock_outline</i>
+                        <i class="material-icons prefix icon-white">lock_outline</i>
                         <input id="database" type="text" name = "database" id = "database">
                         <label for="password">database</label>
                       </div>
@@ -54,18 +64,20 @@
                     <div class="row">
 
                       <div class="input-field col s12">
-                        <input type = "submit" name = "loginBtn" class="btn col s12" value="login" id = "login">
+
+                        <button class = "waves-effect waves-light btn btn-link" style = "width:100%;" id = "login">
+                          Login
+                        </button> 
                       </div>
                 
                       <div class="col s12">
-                        <button class = "waves-effect waves-light btn" style = "width:100%;" id = "createBtn">
+                        <button class = "waves-effect waves-light btn btn-link" style = "width:100%;" id = "createBtn">
                           Create
                         </button>                      
                       </div>
 
                     </div>
                    
-                    <span class = "col s12" id = "message" style = "text-align: center; color:blue; padding-bottom: 15px;"></span>
                 </div>
               </div> 
         </div>

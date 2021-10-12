@@ -1,20 +1,20 @@
-let express = require("express");
-let app = express();
-const http = require('http');
-const server = http.createServer(app);
+var express = require("express");
+var app = express();
+var http = require('http');
+var server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
-
-let bodyParser = require('body-parser')
+const dbConnection = require('./dbConnection');
+const Service = require('./services')
+const bodyParser = require('body-parser')
 
 
 //routes
 let sqlGenerator = require('./routes/sqlGenerator');
 let projectRoutes = require('./routes/projects');
-const services = require("./services");
 
 
-var port = 1010;
+var port = 3000;
 
 
 
@@ -37,14 +37,14 @@ io.on('connection', (socket) => {
   });
 
   socket.on('autoSave', (message) => {
-      services.sqlGeneratorService.toggleAutoSave(message);
+      Service.sqlGeneratorService.toggleAutoSave(message);
   })
 });
 
 
 
-server.listen(8080, () => {
-  console.log('listening on *:8080');
+server.listen(port, () => {
+  console.log('listening on ' + port);
 });
 
 
@@ -108,5 +108,3 @@ app.get('/test/:api', function(req, res){
     break;
   }
 });
-
-

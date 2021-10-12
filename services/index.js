@@ -1,4 +1,5 @@
 module.exports = {
     sqlGeneratorService:require('./sqlGeneratorService'),
-    projectService:require('./projectService')
+    projectService:require('./projectService'),
+    jsonToSqlService:require('./jsonToSqlService')
 }
