@@ -15,12 +15,15 @@ router.post('/createDatabase', (req, res) => {
 })
 
 router.post('/saveDatabase', (req, res) => {
-    console.log('....')
     controllers.sqlGeneratorController.saveUserDatabase(req, res);  
 });
 
 router.post('/generateSqlScript', (req, res) => {
     controllers.sqlGeneratorController.generateSqlScript(req, res);
+})
+
+router.post('/delete_database', (req, res) => {
+    controllers.sqlGeneratorController.deleteDatabase(req, res);
 })
 
   

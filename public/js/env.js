@@ -1,6 +1,6 @@
 import {getDBMSView, getTableHTML, getTableListItemForSidebarHTML, getNewTableRow} from './HTML_Views.js'
 import {updateDBManager, tableCount, currentFocus, addTable, addAttribute, tables, changeTableView} from './dbmsUserEntry.js'
-
+;
 window.addEventListener('DOMContentLoaded', (event) => {
               
   document.querySelector("#createBtn").onclick = createDatabase;
@@ -12,6 +12,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 //Global Variables
 var userInstance = {
+  id: null,
   username: null,
   databaseName: null,
   tables: []
@@ -33,26 +34,26 @@ const generateSqlScript = () => {
   })
 }
 
+const deleteDatabase = () => {
+  let data = {id: userInstance.id};
+  $.ajax({
+    async: true,
+    url: '/delete_database',
+    contentType: 'application/json',
+    data: JSON.stringify(data),
+    type: 'post',
+    success: function(){
+      location.reload();
+    },
+    error: function(result){
+      console.log('deletion failure')
 
-const saveDatabase = () => {
-  captureTables();
-
-    $.ajax({
-      url: '/saveDatabase',
-      contentType: 'application/json',
-      data: JSON.stringify(userInstance), 
-      type: 'POST',
-      success: function(result){
-        console.log(result)
-          M.toast({html: 'Your database has been saved.'})
-          
-      }, 
-      error: function(result){
-          M.toast({html: `Database save has failed.`})
-        
-      }
-    })    
+    } 
+      
+    })
 }
+
+
 
   
 const  createDatabase = () => {
@@ -70,7 +71,8 @@ const  createDatabase = () => {
       type: 'POST',
       success: function(result){
           M.toast({html: 'User and database created.'})
-          userInstance.username= name;
+          userInstance.id = result._id;
+          userInstance.username = name;
           userInstance.databaseName = dbName;
           initialiseDatabaseView();
       },
@@ -102,17 +104,52 @@ const getDatabase = () => {
       contentType: 'application/json',
       data: JSON.stringify(user),
       type: 'POST',
-      success: function(result){
-          if (captureUserInstance(result)){
-            loadUserInstance();
-          }
+      success: function(data, responseText, jqXHR){
+        if (jqXHR.status == 204){
+          M.toast({html: 'That username and database combination does not exist.'})
+        } 
+        
+        else if (jqXHR.status == 200){
+          console.log('----- retrieved state -----')
+          console.log(JSON.stringify(data, null, 2));
+          console.log('---------------\n\n')
+
+            if (captureUserInstance(data)){
+              loadUserInstance();
+            }
+        }
+        
         },
-      error: function(result){
-        M.toast({html: 'That username and database combination does not exist.'})
+      error: function(){
 
       } 
         
       })
+}
+
+const saveDatabase = () => {
+  captureTables();
+  console.log('----- userInstance state after capture -----')
+  console.log(JSON.stringify(userInstance, null, 2));
+  console.log('\n\n---------------')
+    $.ajax({
+      url: '/saveDatabase',
+      contentType: 'application/json',
+      data: JSON.stringify(userInstance), 
+      type: 'POST',
+      success: function(result){
+        console.log('----- saved state -----')
+        console.log(JSON.stringify(result, null, 2));
+        console.log('\n\n---------------')
+
+  M.toast({html: 'Your database has been saved.'})
+          
+      }, 
+      error: function(result){
+          M.toast({html: `Database save has failed.`})
+        
+      }
+    })    
 }
 
 
@@ -120,6 +157,7 @@ const getDatabase = () => {
 const captureUserInstance = (returnedUserInstance) => {
 
   try {
+    userInstance.id = returnedUserInstance._id;
     userInstance.username = returnedUserInstance.username;
     userInstance.databaseName = returnedUserInstance.databaseName;
     userInstance.tables = returnedUserInstance.tables;
@@ -134,6 +172,7 @@ const captureUserInstance = (returnedUserInstance) => {
 
 const loadUserInstance = () => {
  let tableHTML = convertTableJsonToHtml();
+console.log(tableHTML)
  updateDBManager(tableHTML)
 
   initialiseDatabaseView(); //set event handlers and html for view of database manager
@@ -149,7 +188,7 @@ const loadUserInstance = () => {
 
 const convertTableJsonToHtml = () => {
   
-  
+
     let htmlTables = [];
 
   
@@ -163,19 +202,29 @@ const convertTableJsonToHtml = () => {
     
       tableRowHtml.childNodes[0].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].dataType; 
       tableRowHtml.childNodes[1].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].attribute;
-      tableRowHtml.childNodes[2].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].constraint;
+      tableRowHtml.childNodes[2].firstElementChild.firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].constraint;
+
+      
 
 
-      // if constraint contains references, handle accordingly...
-      if (userInstance.tables[tableCounter].rows[rowCounter].constraint.includes("REFERENCES")){
-        let fk = document.createElement('option');
-        fk.value = 'FOREIGN KEY';
-        let fkOptTextNode = document.createTextNode(`${userInstance.tables[tableCounter].rows[rowCounter].constraint}`);
-        fk.appendChild(fkOptTextNode)
-        tableRowHtml.childNodes[2].firstElementChild.appendChild(fk);
+      if (typeof(userInstance.tables[tableCounter].rows[rowCounter].constraint) != "undefined"){
+        // if constraint contains references, handle accordingly...
+        if (userInstance.tables[tableCounter].rows[rowCounter].constraint.includes("REFERENCES")){
+          let fk = document.createElement('option');
+          fk.value = 'FOREIGN KEY';
+          let fkOptTextNode = document.createTextNode(`${userInstance.tables[tableCounter].rows[rowCounter].constraint}`);
+          fk.appendChild(fkOptTextNode)
+          tableRowHtml.childNodes[2].firstElementChild.firstElementChild.appendChild(fk);
 
-        tableRowHtml.childNodes[2].firstElementChild.selectedIndex =  tableRowHtml.childNodes[2].firstElementChild.options.length;
+        
+          //selected index if theres a foreign key is that option that holds both constraint and fk
+          tableRowHtml.childNodes[2].firstElementChild.firstElementChild.selectedIndex =  tableRowHtml.childNodes[2].firstElementChild.firstElementChild.options.length-1;
+
+          //set foregin key checkbox to ticked
+          tableRowHtml.childNodes[2].firstElementChild.childNodes[1].firstElementChild.checked = true;
+        }
       }
+     
       
       tableHtml.appendChild(tableRowHtml);
 
@@ -212,7 +261,6 @@ const LoadTableNames = () => {
 
   }
 }
-
 
 
 
@@ -258,11 +306,10 @@ const captureTables = () => {
       row.dataType = rowElement.childNodes[0].firstElementChild.value
       row.attribute = rowElement.childNodes[1].firstElementChild.value
     
-      row.constraint = rowElement.childNodes[2].firstElementChild.value
-      
-      
+      row.constraint = rowElement.childNodes[2].firstElementChild.firstElementChild.value;
       table.rows.push(row); //push unique row object into table object
       currentRowNumber++; 
+     
 
     }
 
@@ -335,6 +382,7 @@ const initialiseDatabaseView = () => {
   document.getElementById('save-database').addEventListener('click', saveDatabase);
   document.getElementById('generate-sql-script').addEventListener('click', generateSqlScript);
   document.getElementById('auto-save').addEventListener('click', autoSave);
+  document.getElementById('delete-database').addEventListener('click', deleteDatabase);
 }
 
 

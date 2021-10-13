@@ -35,6 +35,11 @@ const saveUserDatabase = async (query) => {
     return saveSuccess
 }
 
+const deleteDatabaseWithId = async (id) => {
+    let deletionSuccess = await database.deleteDatabaseWithId(id);
+    return deletionSuccess;
+}
+
 module.exports = {
-    createUser, getUser, saveUserDatabase, toggleAutoSave
+    createUser, getUser, saveUserDatabase, toggleAutoSave, deleteDatabaseWithId
 }

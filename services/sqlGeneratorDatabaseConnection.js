@@ -30,7 +30,13 @@ const saveUser = async (query) => {
 const getUser = async (query) => {
 
     let user = await databaseModel.findOne(query);
-    // console.log(query)
     return user;
 }
-module.exports = {createUser, getUser, saveUser}
+
+const deleteDatabaseWithId = async (id) => {
+    let deletionSuccess = await databaseModel.findByIdAndDelete(id);
+    return deletionSuccess;
+}
+
+
+module.exports = {createUser, getUser, saveUser, deleteDatabaseWithId}

@@ -101,15 +101,6 @@ export function updateDBManager(dbRetrievedTables){
     tables = dbRetrievedTables;
     tableCount = tables.length;
 
-    // tables.forEach(table => {
-    //     let rows = table.childNodes;
-    //     rows.forEach(row => {
-    //         try {
-    //             console.log(row.childNodes[2].firstElementChild.value)
-    //         }
-    //         catch{}
-    //     })
-    // })
 }
 
 

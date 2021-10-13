@@ -106,21 +106,6 @@ function getNewTableRow(table){
     }
 
 
- 
-
-
-
-    // let fkRadioLabel = document.createElement('label');
-
-    // let fkRadioLabelText = document.createElement('span');
-    // fkRadioLabelText.innerHTML = "foreign key";
-
-    
-   
-
-    
-
-
     let constraintDiv = document.createElement('div');
     let fkLabelContainer = document.createElement('label');
 
@@ -168,7 +153,6 @@ function getNewTableRow(table){
 
     dataTypeTD.appendChild(dataTypeInput);
     attributeTD.appendChild(attributeInput);
-    // constraintTD.appendChild(constraintInput);
     constraintTD.appendChild(constraintDiv);
 
     rowTR.appendChild(dataTypeTD);
@@ -361,6 +345,7 @@ function getDBMSView(){
                                     <li id = "save-database"><a>save</a></li>
                                     <li id = "generate-sql-script"><a>generate SQL script</a></li>
                                     <li id = "auto-save"><a>toggle auto-save</a></li>
+                                    <li id = "delete-database"><a>delete database</a></li>
                                 </ul>
                             </div>
                         </nav>

@@ -1,3 +1,4 @@
+const services = require('../services');
 let Service = require('../services');
 
 
@@ -71,12 +72,25 @@ const saveUserDatabase = async (req, res) => {
 
     let data = req.body;
     let query = {username: data.username, databaseName: data.databaseName, tables: data.tables};
-    
+      console.log(JSON.stringify(data, null, 2))
+
     Service.sqlGeneratorService.saveUserDatabase(query).then(saveSuccess => {
         res.send(saveSuccess)
     })
 }
 
+const deleteDatabase = async (req, res) => {
+
+    let id = req.body.id;
+
+    let response = await Service.sqlGeneratorService.deleteDatabaseWithId(id);
+    if (response != null){
+        res.status(200).send()
+    } else {
+        res.status(400).send();
+    }
+}
+
 module.exports = {
-    getUser, createUser, saveUserDatabase, generateSqlScript
+    getUser, createUser, saveUserDatabase, generateSqlScript, deleteDatabase
 }
