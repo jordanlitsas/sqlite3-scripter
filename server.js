@@ -14,7 +14,7 @@ let sqlGenerator = require('./routes/sqlGenerator');
 let projectRoutes = require('./routes/projects');
 
 
-var port = 3000;
+var port = 8080;
 
 
 
@@ -31,9 +31,11 @@ app.use(projectRoutes);
 //sockets
 io.on('connection', (socket) => {
   console.log('user connected');
+  socket.emit('welcome', 'you connected to the sql database generator');
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
+
   });
 
   socket.on('autoSave', (message) => {

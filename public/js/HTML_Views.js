@@ -15,10 +15,12 @@ function getNewTableRow(table){
     let totalRowNumber;
     try {
         totalRowNumber = document.getElementById(table.id).childElementCount-1;
+        console.log(document.getElementById(table.id).childElementCount-1)
     }
     catch{
         totalRowNumber = 0;
     }
+
 
 
     let rowTR = document.createElement('tr');
@@ -111,7 +113,7 @@ function getNewTableRow(table){
 
     let fkCheckboxInput = document.createElement('input');
     fkCheckboxInput.type = "checkbox";
-    // fkCheckboxInput.id = `table${tableNumber}row${totalRowNumber}fkCheckbox`;
+    fkCheckboxInput.id = `table${tableNumber}row${totalRowNumber}fkCheckbox`;
     fkCheckboxInput.value = 'FOREIGN KEY';
     fkCheckboxInput.classList.add("modal-trigger");
     fkCheckboxInput.href = "#modal1";
@@ -162,6 +164,7 @@ function getNewTableRow(table){
 
     dataTypeTD.classList += "valign-wrapper";    
 
+    //handle modal click
     fkCheckboxInput.onclick = function(){
         let constraintSelect = fkCheckboxInput.parentElement.parentElement.firstElementChild;
         if (fkCheckboxInput.checked == true){
@@ -176,6 +179,26 @@ function getNewTableRow(table){
             constraintSelect.removeChild(constraintSelect.childNodes[5]);
         }
     }
+
+    //untick modal if foreign key is not selected
+    constraintInput.addEventListener("click", () => {
+        console.log('on click')
+        let selectedIndex = constraintInput.selectedIndex;
+
+        constraintInput.addEventListener("change", () => {
+            console.log('on change')
+           
+
+            if (selectedIndex == constraintInput.childElementCount - 1){
+                console.log('change condition')
+                console.log(`table${tableNumber}row${totalRowNumber}fkCheckbox`);
+                document.getElementById(`table${tableNumber}row${totalRowNumber}fkCheckbox`).checked = false;
+            }
+        })
+    })
+    
+
+
     return rowTR;
         
 }
@@ -188,7 +211,7 @@ function setModalEventListener(constraintSelect){
         let NumberForMaxSubstringForTableName = selectedReference.indexOf("(")
         let tableName = selectedReference.substring(0, NumberForMaxSubstringForTableName);
 
-        let attributeStartIndex = selectedReference.indexOf("(")+1
+        let attributeStartIndex = selectedReference.indexOf("(")+1;
         let attributeEndIndex = selectedReference.indexOf(")");
         let primaryKeyAttribute = selectedReference.substring(attributeStartIndex, attributeEndIndex)
 

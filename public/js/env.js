@@ -1,6 +1,5 @@
 import {getDBMSView, getTableHTML, getTableListItemForSidebarHTML, getNewTableRow} from './HTML_Views.js'
-import {updateDBManager, tableCount, currentFocus, addTable, addAttribute, tables, changeTableView} from './dbmsUserEntry.js'
-;
+import {updateDBManager, tableCount, currentFocus, addTable, addAttribute, tables, changeTableView} from './dbmsUserEntry.js';
 window.addEventListener('DOMContentLoaded', (event) => {
               
   document.querySelector("#createBtn").onclick = createDatabase;
@@ -340,6 +339,10 @@ const getTableObj = () =>{
 
 var socket = io();
 let autoSaveTimer;
+
+socket.on('welcome', (message) => {
+  console.log(message)
+})
 
 const autoSave = () => {
   let message = {};
