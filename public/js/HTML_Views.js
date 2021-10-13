@@ -74,7 +74,7 @@ function getNewTableRow(table){
 
     let constraintInput = document.createElement('select');
     constraintInput.id = `table${tableNumber}constraint${totalRowNumber}`;
-    
+
 
     let notNullOpt = document.createElement('option');
     notNullOpt.value = 'NOT NULL';
@@ -105,44 +105,81 @@ function getNewTableRow(table){
         constraintInput.appendChild(constraintOptions[i]);
     }
 
-    let fkRadioLabel = document.createElement('label');
 
-    let fkRadioLabelText = document.createElement('span');
-    fkRadioLabelText.innerHTML = "foreign key";
+ 
 
-    let fkCheckboxInput = document.createElement('input');
-    fkCheckboxInput.type = "checkbox";
-    fkCheckboxInput.classList += "with-gap";
-    fkCheckboxInput.value = 'FOREIGN KEY';
-    fkCheckboxInput.classList.add("modal-trigger");
-    fkCheckboxInput.href = "#modal1";
+
+
+    // let fkRadioLabel = document.createElement('label');
+
+    // let fkRadioLabelText = document.createElement('span');
+    // fkRadioLabelText.innerHTML = "foreign key";
+
+    
    
 
     
 
-    fkRadioLabel.appendChild(fkCheckboxInput);
-    fkRadioLabel.appendChild(fkRadioLabelText);
+
+    let constraintDiv = document.createElement('div');
+    let fkLabelContainer = document.createElement('label');
+
+    let fkCheckboxInput = document.createElement('input');
+    fkCheckboxInput.type = "checkbox";
+    // fkCheckboxInput.id = `table${tableNumber}row${totalRowNumber}fkCheckbox`;
+    fkCheckboxInput.value = 'FOREIGN KEY';
+    fkCheckboxInput.classList.add("modal-trigger");
+    fkCheckboxInput.href = "#modal1";
+   
+    let fkLabelSpan = document.createElement('span');
+    let fkLabelTextNode = document.createTextNode('Foreign Key');
+    fkLabelSpan.appendChild(fkLabelTextNode);
+    
+
+  
+
+    constraintDiv.appendChild(constraintInput);
+
+    fkLabelContainer.appendChild(fkCheckboxInput);
+    fkLabelContainer.appendChild(fkLabelSpan);
+    constraintDiv.appendChild(fkLabelContainer);
+
+
+    //CLASSES
+    attributeInput.classList.add("table-input");
+    dataTypeInput.classList.add("table-input");
+    constraintInput.classList.add("table-input");
+
+    constraintDiv.classList.add("row");
+    constraintInput.classList.add("col");
+    constraintInput.classList.add("s10");
+    fkLabelContainer.classList.add("col");
+    fkLabelContainer.classList.add("s2");
+    fkLabelContainer.classList.add("fk-label-container");
+    fkCheckboxInput.classList.add("fk-checkbox");
+    fkLabelSpan.classList.add("fk-span");
+
+
+    
+
+
 
 
 
     dataTypeTD.appendChild(dataTypeInput);
     attributeTD.appendChild(attributeInput);
-    constraintTD.appendChild(constraintInput);
-    constraintTD.appendChild(fkRadioLabel);
+    // constraintTD.appendChild(constraintInput);
+    constraintTD.appendChild(constraintDiv);
 
     rowTR.appendChild(dataTypeTD);
     rowTR.appendChild(attributeTD);
     rowTR.appendChild(constraintTD);
 
-    constraintTD.classList += "row valign-wrapper";
-    constraintInput.classList += "col s10";
-    fkRadioLabel.classList += "col s2";
 
     dataTypeTD.classList += "valign-wrapper";    
 
     fkCheckboxInput.onclick = function(){
         let constraintSelect = fkCheckboxInput.parentElement.parentElement.firstElementChild;
-
         if (fkCheckboxInput.checked == true){
             var elems = document.querySelectorAll('.modal');
             var instances = M.Modal.init(elems);
@@ -204,7 +241,7 @@ function capturePrimaryKeyAndTableName(){
         
         let opt = document.createElement('option');
         let optText = document.createTextNode(`${pkAndNameObj.tableName}(${pkAndNameObj.pk})`);
-        opt.appendChild(optText);Ta
+        opt.appendChild(optText);
 
        
         document.getElementById("table-and-pk-for-fk").appendChild(opt)
@@ -285,19 +322,19 @@ function getDBMSView(){
                 
                         <div id = "board">
 
-                        <div id="fkModal" class="modal" styled = "display:none">
-                            <div class="modal-content">
-                                <h4>Identify Foreign Key Reference</h4>
+                        <div id="fkModal" class="modal fk-modal" styled = "display:none">
+                            <div class="modal-content fk-modal">
+                                <h4 class = "fk-modal">Identify Foreign Key Reference</h4>
 
-                                <div class = "row">
-                                    <div class = "col s12">
-                                        <select id = "table-and-pk-for-fk" style = "width: 100%"></select>
+                                <div class = "row fk-modal" >
+                                    <div class = "col s12 fk-modal">
+                                        <select id = "table-and-pk-for-fk" style = "width: 100%"> class = "fk-modal"</select>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="modal-footer">
-                                <a  href = "#" id = "fkModalSubmit" class="modal-close waves-effect waves-green dark-grey btn-flat" style = "width:100%; text-align: center !important; color: white;">Submit</a>
+                            <div class="modal-footer fk-modal">
+                                <a  href = "#" id = "fkModalSubmit" class="modal-close waves-effect waves-green btn-link btn-flat" style = "width:100%; text-align: center !important; color: white;">Submit</a>
                             </div>
 
                         </div>
@@ -306,7 +343,6 @@ function getDBMSView(){
                                 <div class = "col s1" id = "sidenav">
                                     <nav class = "dark-grey">
                                         <ul id = "table-tabs">     
-                                        <li></li>           
                                         </ul>
         
                                     </nav>

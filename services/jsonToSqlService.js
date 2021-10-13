@@ -32,7 +32,6 @@ const getScript = (user) => {
            
            
 
-        console.log(userInstanceTable.rows[rowCounter])
         if (constraint.includes("REFERENCES")){
             let constraintPhrases = constraint.split(" ").splice(0);
             if (appendLine != ""){

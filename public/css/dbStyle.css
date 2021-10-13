@@ -84,9 +84,15 @@ nav.dark-grey.bottom-nav{
 
 select{
     display: inline !important;
+    background-color: #39464e !important;
+    padding: 0px 1vw 0px 1vw !important;
+
 }
 
-
+select, option{
+    border: 0 !important;
+    border-bottom: 1px solid #fff !important;
+}
 
 .input-field>label{
 
@@ -99,26 +105,43 @@ input, select, option, th{
     
 }
 
-
-
-select, option{
-    border: 0 !important;
-    border-bottom: 1px solid #fff !important;
+input#id{
+    color: #39464e !important;
+ 
 }
 
 input.table-name-input{
     border-bottom: 0px !important;
     margin:0px 0px 0px 0px !important;
     padding-left:5px !important;
-  
-
 }
-
-
 
 input.table-name-input:hover{
     background-color: #39464e !important;
 }
+
+select.table-input, input.table-input{
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
+.checkbox-col{
+    display: flex;
+    flex-direction: column;
+}
+
+.fk-label-container{
+    padding-top: 1em !important;
+
+}
+
+.fk-span{
+    padding-left: 25px !important;
+    line-height: 15px !important;
+    font-size: 13px !important;
+}
+
 
 
 li.dark-grey:hover{
@@ -134,11 +157,6 @@ i.icon-white {
     background-color: #3e4146 !important;
 }
 
-select{
-    background-color: #39464e !important;
-
-}
-
 .btn-link{
     background-color: #98c1d9 !important;
     color: #39464e !important;
@@ -147,10 +165,6 @@ select{
 #createBtn-wrapper{
     margin-top: 0 !important;
 }
-input#id{
-    color: #39464e !important;
- 
- }
 
  
   
@@ -169,6 +183,14 @@ input#id{
  td{
      padding: 5px  20px !important;
  }
- select{
-    padding: 0px 1vw 0px 1vw !important;
-}
+
+
+
+ .fk-modal{
+    background-color: #293241 !important;
+ }
+
+ #table-and-pk-for-fk{
+    border-bottom: 0 !important;
+
+ }

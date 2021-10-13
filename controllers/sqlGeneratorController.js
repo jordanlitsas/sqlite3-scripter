@@ -73,7 +73,6 @@ const saveUserDatabase = async (req, res) => {
     let query = {username: data.username, databaseName: data.databaseName, tables: data.tables};
     
     Service.sqlGeneratorService.saveUserDatabase(query).then(saveSuccess => {
-        console.log(saveSuccess)
         res.send(saveSuccess)
     })
 }

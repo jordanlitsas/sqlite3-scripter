@@ -43,6 +43,7 @@ const saveDatabase = () => {
       data: JSON.stringify(userInstance), 
       type: 'POST',
       success: function(result){
+        console.log(result)
           M.toast({html: 'Your database has been saved.'})
           
       }, 
