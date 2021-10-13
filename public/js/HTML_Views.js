@@ -269,15 +269,17 @@ function getTableHTML(tableCount){
 
 
 function getDBMSView(){
-    return `<nav class = "dark-grey" id = "top-nav">
-                    <div class = "top-nav">
+    return `
+    
+                    <div class = "row">
+                    <nav class = "dark-blue">
+                        <div>
                         <ul>
-                            <li><a href = "./index.html">Home</a></li>
-                            <li><a href = "#">About</a></li>
-                            <li><a href = "/dbmsUserEntry.html">Contact</a></li> 
+                            <li><a href = "./index.html"><img src = './resources/home-icon.svg' id = "home-icon"></a></li>
                         </ul>
+                        </div>
+                        </nav>
                     </div>
-                </nav>
                 
                     <div class = "container-fluid">
                 
@@ -299,38 +301,34 @@ function getDBMSView(){
                             </div>
 
                         </div>
-                                <div class = "row">
-                                    <div class = "col s1">
-                                        <span id = "last-auto-save-time-stamp"></span>
-                                    </div>
-                                </div>
-                                <div class = "row" >
-                                        <div class = "col s1" id = "sidenav">
-                                            <nav class = "dark-grey">
-                                                <ul id = "table-tabs">     
-                                                <li style = "font-size: 16px; text-align:center !important; width: 100%;">Tables</li>           
-                                                </ul>
-                
-                                            </nav>
-                                        
-                                        </div>
-                                    
-                                    <div class = "col s11" id = "main"></div>
-                                    
-                                </div>
                                 
-                                <nav class = "dark-grey bottom-nav">
-                                    <div  id = "bottom-control">
-                                        <ul id = "table-tabs">
-                                            <li id = "new-table"><a>new table</a></li>
-                                            <li id = "new-attribute"><a>new attribute</a></li>
-                                            <li id = "save-database"><a>save</a></li>
-                                            <li id = "generate-sql-script"><a>generate SQL script</a></li>
-                                            <li id = "auto-save"><a>toggle auto-save</a></li>
+                        <div class = "row" >
+                                <div class = "col s1" id = "sidenav">
+                                    <nav class = "dark-grey">
+                                        <ul id = "table-tabs">     
+                                        <li></li>           
                                         </ul>
-                                    </div>
-                                </nav>
-                
+        
+                                    </nav>
+                                
+                                </div>
+                            
+                            <div class = "col s11" id = "main"></div>
+                            
+                        </div>
+                                
+                        <nav class = "dark-grey bottom-nav">
+                            <div  id = "bottom-control">
+                                <ul id = "table-tabs">
+                                    <li id = "new-table"><a>new table</a></li>
+                                    <li id = "new-attribute"><a>new attribute</a></li>
+                                    <li id = "save-database"><a>save</a></li>
+                                    <li id = "generate-sql-script"><a>generate SQL script</a></li>
+                                    <li id = "auto-save"><a>toggle auto-save</a></li>
+                                </ul>
+                            </div>
+                        </nav>
+        
                             
                 
                         </div>

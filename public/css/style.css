@@ -31,9 +31,8 @@ footer {
 }
 
 
-img, svg{
-  height: 5vh;
-  width:auto;
+#home-icon{
+  padding-top:20px !important;
 }
 
 img:hover{
@@ -49,6 +48,8 @@ svg:hover{
   padding-left: 5px;
   padding-right: 5px;
   padding-bottom: 15px;
+  height: 5vh;
+  width:auto;
 } 
 
 #about-me{

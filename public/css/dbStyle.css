@@ -10,11 +10,9 @@ body{
     background-color: #39464e;
   }
   
-.top-nav{
-    display: flex;
-    flex-direction: row;
-    justify-content:center;
-}
+  #home-icon{
+    padding-top:20px !important;
+  }
 
 h4{
     text-align: center;
@@ -52,18 +50,16 @@ li:hover{
 
 #main{
     height: 100vh;
-    border: 1px solid black;
+    border-left: 1px solid black;
     background-color: #39464e;
-    /* margin-left: 10vw !important; */
-    padding-left: 0px;
-    
+    padding: 0px;
+
 
 }
 
 
 #sidenav{
     padding: 0px;
-    /* float:left; */
     background-color: grey;
 
 }
@@ -72,6 +68,9 @@ div.row{
     margin-bottom: 0px;
 }
 
+.dark-blue{
+    background-color: #293241 !important;
+  }
 nav.blue-grey{
     margin:0px !important;
 }
@@ -87,9 +86,7 @@ select{
     display: inline !important;
 }
 
-.card-panel{
-    background-color: #39464e !important;
-}
+
 
 .input-field>label{
 
@@ -102,9 +99,7 @@ input, select, option, th{
     
 }
 
-select, input{
-    padding: 0px 1vw 0px 1vw !important;
-}
+
 
 select, option{
     border: 0 !important;
@@ -115,8 +110,7 @@ input.table-name-input{
     border-bottom: 0px !important;
     margin:0px 0px 0px 0px !important;
     padding-left:5px !important;
-    /* box-sizing: border-box !important; */
-    /* height:100% !important; */
+  
 
 }
 
@@ -148,7 +142,10 @@ select{
 .btn-link{
     background-color: #98c1d9 !important;
     color: #39464e !important;
+}
 
+#createBtn-wrapper{
+    margin-top: 0 !important;
 }
 input#id{
     color: #39464e !important;
@@ -161,3 +158,17 @@ input#id{
  .valign-wrapper{
      margin-bottom: 0 !important;
  }
+
+
+ th{
+     text-align: center !important;
+     background-color: #3e4146 !important;
+
+ }
+
+ td{
+     padding: 5px  20px !important;
+ }
+ select{
+    padding: 0px 1vw 0px 1vw !important;
+}
