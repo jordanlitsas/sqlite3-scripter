@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>The Databaser</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href = "./css/dbStyle.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    </head>
+    <body id = "demo">
+      <div class = "row">
+        <nav class = "dark-blue">
+          <div class = "top-nav">
+            <ul>
+              <li><a href = "./index.html"><img src = './resources/home-icon.svg' id = "home-icon"></a></li>
+            </ul>
+           </div>
+          </nav>
+      </div>
+    
+
+      <div class = "row" style = "height:4vh"></div>
+        <div class = "row" >
+            <div class = "col s4"></div>
+            <div class = "col s4">
+                <h4>Sqlite3 Database Generator</h4>
+                <p>This app allows a user to create a sqlite3 script by utilising an intuitive ERD-like interface.</p>
+                <p>You're able to save and resume your work, and ultimately generate a text file containing the sql syntax to create your database.</p>
+                <p>This tool allows you to design your relational database, and generate a script from that design.</p>
+            </div>
+            <div class = "col s4"></div>
+
+        </div>
+
+        <div class = "row" style = "height: 1vh"></div>
+        <div id = "login-wrapper">
+            <div  class="row">
+                <div class = "col s4"></div>
+                <div class="col s4 z-depth-6 card-panel dark-blue">
+
+
+                    <div class="row">
+                      <div class="input-field col s12">
+                        <i class="material-icons prefix icon-white">account_circle</i>
+                        <input type="text" name = "username" id = "username">
+                        <label for="email" data-error="wrong" data-success="right">name</label>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="input-field col s12">
+                        <i class="material-icons prefix icon-white">lock_outline</i>
+                        <input id="database" type="text" name = "database" id = "database">
+                        <label for="password">database</label>
+                      </div>
+                    </div>
+                    
+                    <div class="row">
+
+                      <div class="input-field col s12">
+
+                        <button class = "waves-effect waves-light btn btn-link" style = "width:100%;" id = "login">
+                          Login
+                        </button> 
+                      </div>
+                
+                      <div class="input-field col s12" id = "createBtn-wrapper">
+                        <button class = "waves-effect waves-light btn btn-link" style = "width:100%;" id = "createBtn">
+                          Create
+                        </button>                      
+                      </div>
+
+                    </div>
+                   
+                </div>
+              </div> 
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        
+
+        <script type = "module" src = "./js/dbmsUserEntry.js"></script>
+        <script type = "module" src = "./js/env.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <!-- <script>
+          var socket = io();
+        </script> -->
+        
+            </body>
+            </html>
