@@ -7,6 +7,7 @@ const io = new Server(server);
 const dbConnection = require('./dbConnection');
 const Service = require('./services')
 const bodyParser = require('body-parser')
+require('dotenv').config();
 
 
 //routes
@@ -14,7 +15,7 @@ let sqlGenerator = require('./routes/sqlGenerator');
 let projectRoutes = require('./routes/projects');
 
 
-var port = 8080;
+var port = process.env.PORT;
 
 
 
