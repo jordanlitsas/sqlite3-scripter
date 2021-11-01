@@ -12,7 +12,6 @@ require('dotenv').config();
 
 //routes
 let sqlGenerator = require('./routes/sqlGenerator');
-let projectRoutes = require('./routes/projects');
 
 
 var port = process.env.PORT;
@@ -24,20 +23,12 @@ app.use(bodyParser.json())
 app.use(express.json())
 app.use(express.static(__dirname + '/public'));
 app.use(sqlGenerator);
-app.use(projectRoutes);
 
 
 
 
 //sockets
 io.on('connection', (socket) => {
-  console.log('user connected');
-  socket.emit('welcome', 'you connected to the sql database generator');
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-
-  });
 
   socket.on('autoSave', (message) => {
       Service.sqlGeneratorService.toggleAutoSave(message);
