@@ -1,6 +1,5 @@
 var expect = require("chai").expect;
 var request = require("request");
-// var db = require("../dbConnection")
 
 
 var url = 'http://localhost:1010/test/';
@@ -64,8 +63,6 @@ describe("user can save the table elements they create to mongoDB", function(){
 
     
 })
-
-
 
 
 describe("user can login with user and database names", function(){

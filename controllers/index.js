@@ -1,4 +1,3 @@
 module.exports = {
-    sqlGeneratorController:require('./sqlGeneratorController'),
-    projectController:require('./projectController')
+    sqlGeneratorController:require('./sqlGeneratorController')
 }

@@ -119,7 +119,7 @@ function getNewTableRow(table){
     fkCheckboxInput.href = "#modal1";
    
     let fkLabelSpan = document.createElement('span');
-    let fkLabelTextNode = document.createTextNode('Foreign Key');
+    let fkLabelTextNode = document.createTextNode('FK');
     fkLabelSpan.appendChild(fkLabelTextNode);
     
 
@@ -149,6 +149,12 @@ function getNewTableRow(table){
 
     
 
+    let deleteRowBtn = document.createElement('button');
+    deleteRowBtn.innerText = 'X';
+    deleteRowBtn.onclick = () => {
+        rowTR.remove();
+    }
+    rowTR.appendChild(deleteRowBtn);
 
 
 
@@ -156,7 +162,8 @@ function getNewTableRow(table){
     dataTypeTD.appendChild(dataTypeInput);
     attributeTD.appendChild(attributeInput);
     constraintTD.appendChild(constraintDiv);
-
+    
+   
     rowTR.appendChild(dataTypeTD);
     rowTR.appendChild(attributeTD);
     rowTR.appendChild(constraintTD);
@@ -223,9 +230,7 @@ function setModalEventListener(constraintSelect){
         constraintSelect.selectedIndex = 5;
     }
 }
-
-
-    
+   
 function capturePrimaryKeyAndTableName(){
     captureTables();
     let tables = userInstance.tables;
@@ -260,7 +265,6 @@ function getTableListItemForSidebarHTML(tableCount){
     let li = document.createElement('li');
     li.id = `tableSidebarListItem${tableCount}`;
     li.classList.add('dark-grey')
-    // li.classList.add('table-name-input');
 
     let tableNameInput = document.createElement('input');
     tableNameInput.placeholder = `table ${tableCount}`;
@@ -276,11 +280,10 @@ function getTableListItemForSidebarHTML(tableCount){
 }
 
 
-
-
 function getTableHTML(tableCount){
     let table = document.createElement('table');
     table.id = `table${tableCount}`;
+    
 
     let tableHeaderRow = document.createElement('tr');
 
@@ -288,6 +291,7 @@ function getTableHTML(tableCount){
     let thAttribute = document.createElement('th');
     let thConstraint = document.createElement('th');
 
+   
 
     let dataTypeTextNode = document.createTextNode('Data Type');
     let attributeTextNode = document.createTextNode('Attribute');

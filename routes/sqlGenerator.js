@@ -4,25 +4,25 @@ var controllers = require('../controllers');
 
 
 
-router.post('/getDatabase', (req, res) => {
+router.post('/login', (req, res) => {
     controllers.sqlGeneratorController.getUser(req, res);
 })
 
 
-router.post('/createDatabase', (req, res) => {
+router.post('/', (req, res) => {
    controllers.sqlGeneratorController.createUser(req, res)
    
 })
 
-router.post('/saveDatabase', (req, res) => {
+router.patch('/', (req, res) => {
     controllers.sqlGeneratorController.saveUserDatabase(req, res);  
 });
 
-router.post('/generateSqlScript', (req, res) => {
+router.post('/generate', (req, res) => {
     controllers.sqlGeneratorController.generateSqlScript(req, res);
 })
 
-router.post('/delete_database', (req, res) => {
+router.delete('/', (req, res) => {
     controllers.sqlGeneratorController.deleteDatabase(req, res);
 })
 

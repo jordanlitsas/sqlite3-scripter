@@ -23,24 +23,47 @@ let autoSaveToggle = false;
 const generateSqlScript = () => {
   captureTables();
   $.ajax({
-    url: '/generateSqlScript',
+    url: '/api/generate',
       contentType: 'application/json',
       data: JSON.stringify(userInstance), 
       type: 'POST',
       success: function(result){
-        console.log(result)
+        createTextFile(result)
+        
       }
   })
 }
+
+const createTextFile = (result) => {
+  // let scriptText = "";
+  // result.forEach(line => {
+  //   scriptText += line + " \n";
+  // })
+  //   var element = document.createElement('a');
+  //   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(scriptText));
+  //   element.setAttribute('download', userInstance.databaseName);
+  
+  //   element.style.display = 'none';
+  //   document.body.appendChild(element);
+  
+  //   element.click();
+  
+  //   document.body.removeChild(element);
+  }
+  
+  
+  
+
+
 
 const deleteDatabase = () => {
   let data = {id: userInstance.id};
   $.ajax({
     async: true,
-    url: '/delete_database',
+    url: '/api',
     contentType: 'application/json',
     data: JSON.stringify(data),
-    type: 'post',
+    type: 'DELETE',
     success: function(){
       location.reload();
     },
@@ -62,24 +85,25 @@ const  createDatabase = () => {
 
    
     let user = {name: name, database: dbName};
-    
+
+
+ 
     $.ajax({
-      url: '/createDatabase',
+      url: '/api',
       contentType: 'application/json',
       data: JSON.stringify(user),
       type: 'POST',
       success: function(result){
-          M.toast({html: 'User and database created.'})
-          userInstance.id = result._id;
-          userInstance.username = name;
-          userInstance.databaseName = dbName;
-          initialiseDatabaseView();
-      },
-      error: function(result){
-        if (result.responseJSON.result == 'used'){
-          M.toast({html: 'Name already taken.\nTry Again.'})
+          if (result.result == "used"){
+            M.toast({html: 'Name already taken.\nTry Again.'})
+          } else {
+            userInstance.id = result._id;
+            userInstance.username = name;
+            userInstance.databaseName = dbName;
+            initialiseDatabaseView();
+        
+          }
         }
-      }
     })
 }
               
@@ -97,9 +121,11 @@ const getDatabase = () => {
     userInstance.username = name;
     userInstance.databaseName = dbName;
 
+    console.log(user)
+    
     $.ajax({
       async: false,
-      url: '/getDatabase',
+      url: '/api/login',
       contentType: 'application/json',
       data: JSON.stringify(user),
       type: 'POST',
@@ -109,10 +135,6 @@ const getDatabase = () => {
         } 
         
         else if (jqXHR.status == 200){
-          console.log('----- retrieved state -----')
-          console.log(JSON.stringify(data, null, 2));
-          console.log('---------------\n\n')
-
             if (captureUserInstance(data)){
               loadUserInstance();
             }
@@ -124,29 +146,22 @@ const getDatabase = () => {
       } 
         
       })
+
 }
 
 const saveDatabase = () => {
   captureTables();
-  console.log('----- userInstance state after capture -----')
-  console.log(JSON.stringify(userInstance, null, 2));
-  console.log('\n\n---------------')
+
     $.ajax({
-      url: '/saveDatabase',
+      url: '/api',
       contentType: 'application/json',
       data: JSON.stringify(userInstance), 
-      type: 'POST',
+      type: 'PATCH',
       success: function(result){
-        console.log('----- saved state -----')
-        console.log(JSON.stringify(result, null, 2));
-        console.log('\n\n---------------')
-
-  M.toast({html: 'Your database has been saved.'})
-          
+        M.toast({html: 'Your database has been saved.'})
       }, 
       error: function(result){
           M.toast({html: `Database save has failed.`})
-        
       }
     })    
 }
@@ -171,15 +186,12 @@ const captureUserInstance = (returnedUserInstance) => {
 
 const loadUserInstance = () => {
  let tableHTML = convertTableJsonToHtml();
-console.log(tableHTML)
  updateDBManager(tableHTML)
-
   initialiseDatabaseView(); //set event handlers and html for view of database manager
   try {  
     document.getElementById('main').appendChild(tables[0]);
   }
   catch {}
-
   LoadTableNames(); //table names from json --> sidebar navigation items with <input> value for table name pre-defined.
 
 }
@@ -187,10 +199,7 @@ console.log(tableHTML)
 
 const convertTableJsonToHtml = () => {
   
-
-    let htmlTables = [];
-
-  
+  let htmlTables = [];
   let tableCounter = 0;
   
   for (tableCounter; tableCounter < userInstance.tables.length; tableCounter++){
@@ -199,9 +208,9 @@ const convertTableJsonToHtml = () => {
     for (rowCounter; rowCounter < userInstance.tables[tableCounter].rows.length; rowCounter++){
       let tableRowHtml = getNewTableRow(tableHtml);
     
-      tableRowHtml.childNodes[0].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].dataType; 
-      tableRowHtml.childNodes[1].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].attribute;
-      tableRowHtml.childNodes[2].firstElementChild.firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].constraint;
+      tableRowHtml.childNodes[1].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].dataType; 
+      tableRowHtml.childNodes[2].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].attribute;
+      tableRowHtml.childNodes[3].firstElementChild.firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].constraint;
 
       
 
@@ -213,14 +222,14 @@ const convertTableJsonToHtml = () => {
           fk.value = 'FOREIGN KEY';
           let fkOptTextNode = document.createTextNode(`${userInstance.tables[tableCounter].rows[rowCounter].constraint}`);
           fk.appendChild(fkOptTextNode)
-          tableRowHtml.childNodes[2].firstElementChild.firstElementChild.appendChild(fk);
+          tableRowHtml.childNodes[3].firstElementChild.firstElementChild.appendChild(fk);
 
         
           //selected index if theres a foreign key is that option that holds both constraint and fk
-          tableRowHtml.childNodes[2].firstElementChild.firstElementChild.selectedIndex =  tableRowHtml.childNodes[2].firstElementChild.firstElementChild.options.length-1;
+          tableRowHtml.childNodes[3].firstElementChild.firstElementChild.selectedIndex =  tableRowHtml.childNodes[3].firstElementChild.firstElementChild.options.length-1;
 
           //set foregin key checkbox to ticked
-          tableRowHtml.childNodes[2].firstElementChild.childNodes[1].firstElementChild.checked = true;
+          tableRowHtml.childNodes[3].firstElementChild.childNodes[1].firstElementChild.checked = true;
         }
       }
      
@@ -232,21 +241,14 @@ const convertTableJsonToHtml = () => {
     htmlTables.push(tableHtml);
 
   }
-
-return htmlTables;
   
-  
-  
-  
-
+  return htmlTables;
 }
-
 
 
 const LoadTableNames = () => {
   let tableCount = 0;
   let numberOfTables = userInstance.tables.length;
-
 
   while (tableCount < numberOfTables){
     let li = getTableListItemForSidebarHTML(tableCount);
@@ -266,18 +268,11 @@ const LoadTableNames = () => {
 const captureTables = () => {
 
   let tablesToConvert = tables.slice(0);
-
-
   userInstance.tables = new Array();
-
   let currentRowNumber = 1;
   let currentTableNumber = 0;
 
-  
-
- let currentViewedTable = document.getElementById('main').firstElementChild;
-
-
+  let currentViewedTable = document.getElementById('main').firstElementChild;
 
   if (currentViewedTable != null){
     tablesToConvert.push(currentViewedTable);
@@ -302,24 +297,22 @@ const captureTables = () => {
       let rowElement = tablesToConvert[currentTableNumber].childNodes[currentRowNumber]; //capturing each row element
       
       //capture each table data input's value, assign it to the row object
-      row.dataType = rowElement.childNodes[0].firstElementChild.value
-      row.attribute = rowElement.childNodes[1].firstElementChild.value
-    
-      row.constraint = rowElement.childNodes[2].firstElementChild.firstElementChild.value;
+      row.dataType = rowElement.childNodes[1].firstElementChild.value
+      row.attribute = rowElement.childNodes[2].firstElementChild.value
+
+      //Constraint Option element value for FK is 'foreign key', and not the actual foreign key value.
+      //This takes the Option index text value
+      row.constraint = rowElement.childNodes[3].firstElementChild.firstElementChild;
+      row.constraint = row.constraint.options[row.constraint.selectedIndex].text
+      
       table.rows.push(row); //push unique row object into table object
       currentRowNumber++; 
-     
-
     }
-
-
 
     userInstance.tables.push(table);
     currentTableNumber++;
-    currentRowNumber = 1; //if you forget to reset nested loop's counter again, and spend an hour scratching your head like an idiot, you should go back to working in kitchens.
-    
+    currentRowNumber = 1; //if you forget to reset nested loop's counter again, and spend an hour scratching your head like an idiot, you should go back to working in kitchens.    
   }
-
 }
 
 

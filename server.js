@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.json())
 app.use(express.static(__dirname + '/public'));
-app.use(sqlGenerator);
+app.use('/api', sqlGenerator);
 
 
 
@@ -37,8 +37,8 @@ io.on('connection', (socket) => {
 
 
 
-server.listen(3000, () => {
-  console.log('listening on ' + 3000);
+server.listen(port || 8080, () => {
+  console.log('listening on ' + port);
 });
 
 

@@ -7,16 +7,24 @@ const generateSqlScript = async (req, res) => {
     let userInstance = req.body;
 
     //Array of create table syntax ... - extract table data and convert to sql table creation statements
-    // let sql_script = Service.jsonToSqlService.getScript(userInstance);
-    let sql_script = Service.jsonToSqlService.getScript(userInstance);
+    let sqlScriptAndFK = Service.jsonToSqlService.getScript(userInstance);
     
-
-    /*
-    Array needs to be sorted so that tables are created in a proper order. i.e., table1's foreign key references table2's primary key. Table 1 cannot be created before table2/table 1 cannot
-    //have an earlier index than table2.
-    */
-    // sql_script = Service.jsonToSqlService.sort(sql_script);
-    // sql_script = sql_script[1];
+    // let sql_script = Service.jsonToSqlService.sort(sqlScriptAndFK);
+    // //Foreign keys are turned off by default for backwards compatibility with sqlite. This enables foreign keys if the user's db has one.
+    
+    let containsForeignKey = (sqlScriptAndFK) => {
+        sqlScriptAndFK.tableArray.forEach(table => {
+            if (table.containsForeignKey){
+                return true;
+            }
+        })
+        return false;
+    }
+    
+    if (containsForeignKey(sqlScriptAndFK)){
+        sql_script.splice(0, 0, "PRAGMA foreign_keys = ON")
+    }
+    
     let query = {username: userInstance.username, databaseName: userInstance.databaseName, script: sql_script};
     Service.sqlGeneratorService.saveUserDatabase(query).then(saveSuccess => {
         if (!saveSuccess){
@@ -27,9 +35,6 @@ const generateSqlScript = async (req, res) => {
     })
 
 }
-
-
-
 
 
 const getUser = async (req, res) => {
@@ -59,9 +64,8 @@ const createUser = async (req, res) => {
     };
 
     Service.sqlGeneratorService.createUser(user).then(creationSuccess => {
-        
         if (creationSuccess == null){
-            res.status(400).send({result: 'used'});
+            res.status(202).send({result: 'used'});
         } else {
             res.status(200).send(creationSuccess);
         }
@@ -72,8 +76,6 @@ const saveUserDatabase = async (req, res) => {
 
     let data = req.body;
     let query = {username: data.username, databaseName: data.databaseName, tables: data.tables};
-      console.log(JSON.stringify(data, null, 2))
-
     Service.sqlGeneratorService.saveUserDatabase(query).then(saveSuccess => {
         res.send(saveSuccess)
     })

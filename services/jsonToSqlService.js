@@ -1,134 +1,109 @@
-// let sqlSyntax = require("../public/resources/sqlSyntax");
-// const  tables  = require("./dbmsUserEntry");
-
 var userInstance;
 
-
-
 const getScript = (user) => {
-    //ensure userInstance is not null
+
+   
+    //validate user
     if (user == null){return null;}
     else {
         userInstance = user;
     }
 
-    //table names
-    let sql_entities = [];
+    let tableArray = [];
     userInstance.tables.forEach(userInstanceTable => {
 
-        let name = userInstanceTable.tableName;
-        let script = "CREATE TABLE IF NOT EXISTS " + name;
-        let attributes = "";
-        let foreignKeys = "";
+        let tableName = userInstanceTable.tableName;
         let appendLine = "";
-        let rowCounter = 0;
-        
+        let rowi = 0;
+        let row = {name: tableName, attributes: [], containsForeignKey: false};
         //for each row
-        while (rowCounter < userInstanceTable.rows.length){
+        while (rowi < userInstanceTable.rows.length){
 
         //Handles unique foreign key syntax requirements
         //Later versions should have unique syntax organised seperately
-        let constraint = userInstanceTable.rows[rowCounter].constraint;
-           
-           
-
-        if (constraint.includes("REFERENCES")){
-            let constraintPhrases = constraint.split(" ").splice(0);
-            if (appendLine != ""){
-                appendLine += ` ,FOREIGN KEY (${userInstanceTable.rows[rowCounter].attribute}) REFERENCES ${constraintPhrases[constraingPhrases.length-1]}`;
-            } else {
-                appendLine += `FOREIGN KEY (${userInstanceTable.rows[rowCounter].attribute}) REFERENCES ${constraintPhrases[constraintPhrases.length-1]}`;
-
-            }
-            attributes += `${userInstanceTable.rows[rowCounter].dataType} ${userInstanceTable.rows[rowCounter].attribute}, `
+        let constraint = userInstanceTable.rows[rowi].constraint;
+        
+        if ( !constraint.includes("REFERENCES") ){
+            row.attributes.push(`${userInstanceTable.rows[rowi].dataType} ${userInstanceTable.rows[rowi].attribute} ${constraint}`)
+        } else {
             
-            // if (constraintPhrases[0] != "REFERENCES"){
-            //     console.log(constraintPhrases)
-            //     if (constraintPhrases[0] == "NOT"){
-            //         attributes += ` ${userInstanceTable.rows[rowCounter].dataType} ${userInstanceTable.rows[rowCounter].attribute} ${constraintPhrases[0]} ${constraintPhrases[1]}, `;
-            //         foreignKeys += `FOREIGN KEY (${userInstanceTable.rows[rowCounter].attribute}) REFERENCES ${constraintPhrases[3]}, `
-            //     } else {
-            //         attributes += ` ${userInstanceTable.rows[rowCounter].dataType} ${userInstanceTable.rows[rowCounter].attribute} ${constraintPhrases[0]}, `;
-            //         foreignKeys += `FOREIGN KEY (${userInstanceTable.rows[rowCounter].attribute}) REFERENCES ${constraintPhrases[2]}`
-            //     }
-                
-            // } else {
-                
-            //     attributes += ` ${userInstanceTable.rows[rowCounter].dataType} ${userInstanceTable.rows[rowCounter].attribute}, `;
-            //     foreignKeys += `FOREIGN KEY (${userInstanceTable.rows[rowCounter].attribute}) REFERENCES ${constraintPhrases[1]}, )`
-
-
-            // }
-        } else{
-            //at minimum, datatype and attribute name are required -> add to attributes string
-            attributes += userInstanceTable.rows[rowCounter].dataType + " " + userInstanceTable.rows[rowCounter].attribute + " " + constraint;
-            if (rowCounter != userInstanceTable.rows.length-1){
-                attributes += ","
+            row.containsForeignKey = true;
+            let constraintPhrases = constraint.split(" ").splice(0);
+            if (constraintPhrases[0] != "REFERENCES"){
+                row.attributes.push(`${userInstanceTable.rows[rowi].dataType} ${userInstanceTable.rows[rowi].attribute} ${constraintPhrases[0]}`);
+            } else {
+                row.attributes.push(`${userInstanceTable.rows[rowi].dataType} ${userInstanceTable.rows[rowi].attribute}`);
             }
+            if (appendLine != ""){
+                appendLine += ` FOREIGN KEY (${userInstanceTable.rows[rowi].attribute}) REFERENCES ${constraintPhrases[constraintPhrases.length-1]}`;
+            } else {
+                appendLine += `FOREIGN KEY (${userInstanceTable.rows[rowi].attribute}) REFERENCES ${constraintPhrases[constraintPhrases.length-1]}`;
+            }        
         }
 
-        
-        rowCounter++;
-
+        if (rowi == userInstanceTable.rows.length - 1 && appendLine != ""){
+            row.attributes.push(appendLine);
+        }
+        rowi++;
     }
+    tableArray.push(row);
+  
 
-        
-        // if (attributes != ""){
-            if (appendLine != ""){
-                attributes += ", " + appendLine;
-            } 
-            script = script + " ( " + attributes + " );";
-        // }
-
-        
-        sql_entities.push(script);
     });
 
-   
- 
-
-    return sql_entities;    
+    
+    
+    return {tableArray};    
 } 
 
 
-const sort = (sql_script) => {
-    let sql_scriptArr = sql_script;
-    let sql_orderedScriptArr = [];
-    let counter = 0;
+const sort = (sqlObj) => {
+    let orderedScriptArr = [];
 
     //tables without foreign keys are created first
-    for (counter; counter < sql_scriptArr.length; counter++){
-        if (!(sql_scriptArr[counter].includes("REFERENCES"))){
-            console.log("FOREIGN KEY TABLE")
-          sql_orderedScriptArr.push(sql_scriptArr[counter]);
-          sql_scriptArr[counter] = null;
+    for (let i = 0; i < sqlObj.tableArray.length; i++){
+        if (!sqlObj.tableArray[i].containsForeignKey){
+          orderedScriptArr.push(sqlObj.tableArray[i]);
+          sqlObj.tableArray.splice(i, 1);
         }
     }
 
- 
+    /*
+        Some remaining table creation commands with FK will reference other entities with FK left in sqlObj.sql_entities.
+        This will order those remaining table creation commands.
 
-    //clean the array
-    sql_scriptArr = sql_scriptArr.filter(function (el){
-        return el != null;
-    })
+        WHAT COMES FIRST
+        - FK that reference a table in the unordered list must be created after that other table.
 
-    //With the remaining tables that have foreign keys, those that do not reference the other tables that are left should come first.
-    //i.e., a refereces b | b references C, order is: c -> b -> a
-    counter = 0;
-    for(counter; counter < sql_scriptArr.length; counter++){
-        let createTableCommandBrokenIntoArray = sql_scriptArr[counter].split(" ").splice(0);
-        let fkCounter = 0;
-        createTableCommandBrokenIntoArray.forEach(word => {
-            if (word == "REFERENCES"){
-                fkCounter++;
-            }
-        })
+        WHAT COMES LAST
+        - Tables that reference other tables in the ordered list and not those in the unordered list.    
+        
+    */
+      
+}    
+
+const getTableName = (createTableStatement) => {
+    //CREATE TABLE IF NOT EXISTS ______
+    let tableName = createTableStatement.split(" ").splice(0)[5];
+    return tableName;
+}
+   
+const getFkTableReferenceName = (attribute) => {
+    let endIndex = attribute.split('(', 2).join('(').length;
+
+    let counter = 0;
+
+    let startIndex = endIndex-1;
+    while (counter != 1){
+        let character = attribute.charAt(startIndex);
+    if (character == " "){
+        break;
+    }
+    startIndex--;
     }
 
-
-    let resp = [sql_scriptArr, sql_orderedScriptArr];
-    return resp;
-}    
-   
+    let name = attribute.substring(startIndex+1, endIndex);
+    return name;
+}
  
 module.exports = {getScript, sort}

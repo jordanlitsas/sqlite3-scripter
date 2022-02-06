@@ -28,6 +28,10 @@ li{
     list-style: none;
 }
 
+table{
+    table-layout: fixed;
+}
+
 li:hover{
     background-color: rgba(0,0,0,0.1);
     transition: background-color .3s;
