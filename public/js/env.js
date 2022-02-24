@@ -1,5 +1,5 @@
 import {getDBMSView, getTableHTML, getTableListItemForSidebarHTML, getNewTableRow} from './HTML_Views.js'
-import {updateDBManager, tableCount, currentFocus, addTable, addAttribute, tables, changeTableView} from './dbmsUserEntry.js';
+import {updateDBManager, tableCount, addTable, addAttribute, tables, changeTableView} from './dbmsUserEntry.js';
 window.addEventListener('DOMContentLoaded', (event) => {
               
   document.querySelector("#createBtn").onclick = createDatabase;
@@ -17,8 +17,8 @@ var userInstance = {
   tables: []
 };
 
-let autoSaveToggle = false;
-
+const autoSaveToggle = false;
+const userSettings = {fkWarning: false}; 
 
 const generateSqlScript = () => {
   captureTables();
@@ -33,29 +33,23 @@ const generateSqlScript = () => {
       }
   })
 }
-
 const createTextFile = (result) => {
-  // let scriptText = "";
-  // result.forEach(line => {
-  //   scriptText += line + " \n";
-  // })
-  //   var element = document.createElement('a');
-  //   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(scriptText));
-  //   element.setAttribute('download', userInstance.databaseName);
+  let scriptText = "";
+  result.forEach(line => {
+    scriptText += line + " \n";
+  })
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(scriptText));
+    element.setAttribute('download', userInstance.databaseName);
   
-  //   element.style.display = 'none';
-  //   document.body.appendChild(element);
+    element.style.display = 'none';
+    document.body.appendChild(element);
   
-  //   element.click();
+    element.click();
   
-  //   document.body.removeChild(element);
-  }
+    document.body.removeChild(element);
+}
   
-  
-  
-
-
-
 const deleteDatabase = () => {
   let data = {id: userInstance.id};
   $.ajax({
@@ -74,11 +68,8 @@ const deleteDatabase = () => {
       
     })
 }
-
-
-
   
-const  createDatabase = () => {
+const createDatabase = () => {
 
     let name = $('#username').val();
     let dbName = $('#database').val();
@@ -105,8 +96,7 @@ const  createDatabase = () => {
           }
         }
     })
-}
-              
+}            
              
 const getDatabase = () => {
     let name = $('#username').val();
@@ -166,7 +156,6 @@ const saveDatabase = () => {
     })    
 }
 
-
 //Set user's instance to global variables. Returns false if any values don't exist.
 const captureUserInstance = (returnedUserInstance) => {
 
@@ -183,7 +172,6 @@ const captureUserInstance = (returnedUserInstance) => {
   
 }
 
-
 const loadUserInstance = () => {
  let tableHTML = convertTableJsonToHtml();
  updateDBManager(tableHTML)
@@ -196,7 +184,6 @@ const loadUserInstance = () => {
 
 }
  
-
 const convertTableJsonToHtml = () => {
   
   let htmlTables = [];
@@ -208,9 +195,9 @@ const convertTableJsonToHtml = () => {
     for (rowCounter; rowCounter < userInstance.tables[tableCounter].rows.length; rowCounter++){
       let tableRowHtml = getNewTableRow(tableHtml);
     
-      tableRowHtml.childNodes[1].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].dataType; 
-      tableRowHtml.childNodes[2].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].attribute;
-      tableRowHtml.childNodes[3].firstElementChild.firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].constraint;
+      tableRowHtml.childNodes[0].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].dataType; 
+      tableRowHtml.childNodes[1].firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].attribute;
+      tableRowHtml.childNodes[2].firstElementChild.firstElementChild.value = userInstance.tables[tableCounter].rows[rowCounter].constraint;
 
       
 
@@ -222,14 +209,16 @@ const convertTableJsonToHtml = () => {
           fk.value = 'FOREIGN KEY';
           let fkOptTextNode = document.createTextNode(`${userInstance.tables[tableCounter].rows[rowCounter].constraint}`);
           fk.appendChild(fkOptTextNode)
-          tableRowHtml.childNodes[3].firstElementChild.firstElementChild.appendChild(fk);
+          tableRowHtml.childNodes[2].firstElementChild.firstElementChild.appendChild(fk);
 
         
           //selected index if theres a foreign key is that option that holds both constraint and fk
-          tableRowHtml.childNodes[3].firstElementChild.firstElementChild.selectedIndex =  tableRowHtml.childNodes[3].firstElementChild.firstElementChild.options.length-1;
+          tableRowHtml.childNodes[2].firstElementChild.firstElementChild.selectedIndex =  tableRowHtml.childNodes[2].firstElementChild.firstElementChild.options.length-1;
 
           //set foregin key checkbox to ticked
-          tableRowHtml.childNodes[3].firstElementChild.childNodes[1].firstElementChild.checked = true;
+         if (tableRowHtml.childNodes[2].firstElementChild.firstElementChild.value.includes("FOREIGN KEY")){
+           tableRowHtml.childNodes[2].firstElementChild.childNodes[1].firstElementChild.checked = true;
+         }
         }
       }
      
@@ -244,7 +233,6 @@ const convertTableJsonToHtml = () => {
   
   return htmlTables;
 }
-
 
 const LoadTableNames = () => {
   let tableCount = 0;
@@ -262,8 +250,6 @@ const LoadTableNames = () => {
 
   }
 }
-
-
 
 const captureTables = () => {
 
@@ -315,20 +301,12 @@ const captureTables = () => {
   }
 }
 
-
-
-
-
 const getTableObj = () =>{
   return {
     tableName: null,
      rows: []
     };
 }
-
-
-
-
 
 var socket = io();
 let autoSaveTimer;
@@ -369,8 +347,6 @@ const autoSave = () => {
   
 }
 
-
-
 const initialiseDatabaseView = () => {
   document.querySelector('body').innerHTML = getDBMSView();
   document.getElementById('new-table').addEventListener('click', addTable);
@@ -381,11 +357,4 @@ const initialiseDatabaseView = () => {
   document.getElementById('delete-database').addEventListener('click', deleteDatabase);
 }
 
-
-
-
-
-
-
-
-export {userInstance, captureTables}
+export {userInstance, captureTables, userSettings}

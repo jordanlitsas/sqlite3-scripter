@@ -1,4 +1,4 @@
-import {userInstance, captureTables} from "./env.js"
+import {userInstance, captureTables, userSettings} from "./env.js"
 
 
 function getFK(fTextNode){
@@ -129,6 +129,8 @@ function getNewTableRow(table){
 
     fkLabelContainer.appendChild(fkCheckboxInput);
     fkLabelContainer.appendChild(fkLabelSpan);
+
+    
     constraintDiv.appendChild(fkLabelContainer);
 
 
@@ -149,12 +151,13 @@ function getNewTableRow(table){
 
     
 
-    let deleteRowBtn = document.createElement('button');
-    deleteRowBtn.innerText = 'X';
-    deleteRowBtn.onclick = () => {
-        rowTR.remove();
-    }
-    rowTR.appendChild(deleteRowBtn);
+    // deleteRowBtn.classList.add('small');
+    // deleteRowBtn.classList.add('material-icons');
+    // deleteRowBtn.innerText = "cancel";
+    // deleteRowBtn.onclick = () => {
+    //     rowTR.remove();
+    // }
+    // dataTypeTD.appendChild(deleteRowBtn);
 
 
 
@@ -172,7 +175,7 @@ function getNewTableRow(table){
     dataTypeTD.classList += "valign-wrapper";    
 
     //handle modal click
-    fkCheckboxInput.onclick = function(){
+    fkCheckboxInput.onclick = () => {
         let constraintSelect = fkCheckboxInput.parentElement.parentElement.firstElementChild;
         if (fkCheckboxInput.checked == true){
             var elems = document.querySelectorAll('.modal');
@@ -185,20 +188,24 @@ function getNewTableRow(table){
         else {
             constraintSelect.removeChild(constraintSelect.childNodes[5]);
         }
+
+        if (!userSettings.fkWarning){
+            userSettings.fkWarning = true;
+            M.toast({html: `This current version does not support the automatic ordering of table creation statements to support mitigate circular dependencies of foreign keys.\n
+                        Once the script is downloaded, you must manually order your table creation statements.
+        `, displayLength: 5000});
+        }
+        
     }
+
 
     //untick modal if foreign key is not selected
     constraintInput.addEventListener("click", () => {
         console.log('on click')
         let selectedIndex = constraintInput.selectedIndex;
 
-        constraintInput.addEventListener("change", () => {
-            console.log('on change')
-           
-
+        constraintInput.addEventListener("change", () => {           
             if (selectedIndex == constraintInput.childElementCount - 1){
-                console.log('change condition')
-                console.log(`table${tableNumber}row${totalRowNumber}fkCheckbox`);
                 document.getElementById(`table${tableNumber}row${totalRowNumber}fkCheckbox`).checked = false;
             }
         })

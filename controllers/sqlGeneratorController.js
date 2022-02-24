@@ -6,35 +6,126 @@ let Service = require('../services');
 const generateSqlScript = async (req, res) => {
     let userInstance = req.body;
 
-    //Array of create table syntax ... - extract table data and convert to sql table creation statements
-    let sqlScriptAndFK = Service.jsonToSqlService.getScript(userInstance);
-    
-    // let sql_script = Service.jsonToSqlService.sort(sqlScriptAndFK);
-    // //Foreign keys are turned off by default for backwards compatibility with sqlite. This enables foreign keys if the user's db has one.
-    
-    let containsForeignKey = (sqlScriptAndFK) => {
-        sqlScriptAndFK.tableArray.forEach(table => {
-            if (table.containsForeignKey){
-                return true;
-            }
-        })
-        return false;
-    }
-    
-    if (containsForeignKey(sqlScriptAndFK)){
-        sql_script.splice(0, 0, "PRAGMA foreign_keys = ON")
-    }
-    
-    let query = {username: userInstance.username, databaseName: userInstance.databaseName, script: sql_script};
-    Service.sqlGeneratorService.saveUserDatabase(query).then(saveSuccess => {
-        if (!saveSuccess){
-            res.status(400).send();
-        } else {
-            res.status(200).send(sql_script);
-        }
-    })
 
-}
+    const getScript = (userInstance) => {
+
+   
+        //validate user
+        if (userInstance == null){return null;}
+       
+    
+        let tableArray = [];
+        userInstance.tables.forEach(userInstanceTable => {
+    
+            let tableName = userInstanceTable.tableName;
+            let appendLine = "";
+            let rowi = 0;
+            let row = {name: tableName, attributes: [], containsForeignKey: false, references: []};
+            //for each row
+            while (rowi < userInstanceTable.rows.length){
+    
+                //Handles unique foreign key syntax requirements
+                //Later versions should have unique syntax organised seperately
+                let constraint = userInstanceTable.rows[rowi].constraint;
+                
+                if ( !constraint.includes("REFERENCES") ){
+                    row.attributes.push(`${userInstanceTable.rows[rowi].dataType} ${userInstanceTable.rows[rowi].attribute} ${constraint}`)
+                } else {
+                    
+                    row.containsForeignKey = true;
+                    let constraintPhrases = constraint.split(" ").splice(0);
+                    if (constraintPhrases[0] != "REFERENCES"){
+                        row.attributes.push(`${userInstanceTable.rows[rowi].dataType} ${userInstanceTable.rows[rowi].attribute} ${constraintPhrases[0]}`);
+                    } else {
+                        row.attributes.push(`${userInstanceTable.rows[rowi].dataType} ${userInstanceTable.rows[rowi].attribute}`);
+                    }
+                    if (appendLine != ""){
+                        appendLine += ` FOREIGN KEY (${userInstanceTable.rows[rowi].attribute}) REFERENCES ${constraintPhrases[constraintPhrases.length-1]}`;
+                        let referencedTableName = getFkTableReferenceName(`FOREIGN KEY (${userInstanceTable.rows[rowi].attribute}) REFERENCES ${constraintPhrases[constraintPhrases.length-1]}`);
+                        row.references.push(referencedTableName);
+                    } else {
+                        appendLine += `FOREIGN KEY (${userInstanceTable.rows[rowi].attribute}) REFERENCES ${constraintPhrases[constraintPhrases.length-1]}`;
+                        let referencedTableName = getFkTableReferenceName(`FOREIGN KEY (${userInstanceTable.rows[rowi].attribute}) REFERENCES ${constraintPhrases[constraintPhrases.length-1]}`);
+                        row.references.push(referencedTableName);
+                    }        
+                }
+        
+                if (rowi == userInstanceTable.rows.length - 1 && appendLine != ""){
+                    row.attributes.push(appendLine);
+                }
+                rowi++;
+            }
+        tableArray.push(row);
+      
+    
+        });
+    
+        
+        
+        return {tableArray};    
+    } 
+    
+    
+       
+    const getFkTableReferenceName = (attribute) => {
+        let endIndex = attribute.split('(', 2).join('(').length;
+    
+        let counter = 0;
+    
+        let startIndex = endIndex-1;
+        while (counter != 1){
+            let character = attribute.charAt(startIndex);
+        if (character == " "){
+            break;
+        }
+        startIndex--;
+        }
+    
+        let name = attribute.substring(startIndex+1, endIndex);
+        return name;
+    }
+
+    //Array of create table syntax ... - extract table data and convert to sql table creation statements
+    let sqlScriptAndFK = getScript(userInstance);
+    
+    
+    
+
+    let sql_script = [];
+
+    // //Foreign keys are turned off by default for backwards compatibility with sqlite. This enables foreign keys if the user's db has one.
+    for (let i = 0; i < sqlScriptAndFK.tableArray.length; i++){
+        if (sqlScriptAndFK.tableArray[i].containsForeignKey){
+            sql_script.splice(0, 0, "PRAGMA foreign_keys = ON");
+            break;
+        }
+    }
+    
+
+    for (let i  = 0; i < sqlScriptAndFK.tableArray.length; i++){
+        let script = `CREATE TABLE IF NOT EXISTS ${sqlScriptAndFK.tableArray[i].name} (`;
+        for (let j = 0; j < sqlScriptAndFK.tableArray[i].attributes.length; j++){
+            if (j == sqlScriptAndFK.tableArray[i].attributes.length-1){
+                script += sqlScriptAndFK.tableArray[i].attributes[j];
+            } else {
+                script += `${sqlScriptAndFK.tableArray[i].attributes[j]}, `;
+            }
+        }
+        script += `);`;
+        sql_script.push(script);
+    }
+    res.send(sql_script)
+}    
+
+    // let query = {username: userInstance.username, databaseName: userInstance.databaseName, script: sql_script};
+    // Service.sqlGeneratorService.saveUserDatabase(query).then(saveSuccess => {
+    //     if (!saveSuccess){
+    //         res.status(400).send();
+    //     } else {
+    //         res.status(200).send(sql_script);
+    //     }
+    // })
+
 
 
 const getUser = async (req, res) => {
