@@ -1,4 +1,4 @@
-import {userInstance, captureTables, userSettings} from "./env.js"
+import {userInstance, captureTables} from "./env.js"
 
 
 function getFK(fTextNode){
@@ -28,6 +28,7 @@ function getNewTableRow(table){
     let dataTypeTD = document.createElement('td')
     let attributeTD = document.createElement('td');
     let constraintTD = document.createElement('td');
+    let deleteRowTD = document.createElement('td');
 
     let placeholderDataType = document.createElement('option');
     let placeholderConstraint = document.createElement('option');
@@ -131,8 +132,22 @@ function getNewTableRow(table){
     fkLabelContainer.appendChild(fkLabelSpan);
 
     
-    constraintDiv.appendChild(fkLabelContainer);
 
+    let deleteRowBtn = document.createElement('button');
+    deleteRowBtn.classList.add('small');
+    deleteRowBtn.classList.add('material-icons');
+    deleteRowBtn.innerText = "cancel";
+    deleteRowBtn.onclick = () => {
+        rowTR.remove();
+    }
+
+    //make delete row TD the size of the button
+    deleteRowTD.style = "widtch: 10% !important"
+
+
+    
+    constraintDiv.appendChild(fkLabelContainer);
+    
 
     //CLASSES
     attributeInput.classList.add("table-input");
@@ -149,27 +164,16 @@ function getNewTableRow(table){
     fkLabelSpan.classList.add("fk-span");
 
 
-    
-
-    // deleteRowBtn.classList.add('small');
-    // deleteRowBtn.classList.add('material-icons');
-    // deleteRowBtn.innerText = "cancel";
-    // deleteRowBtn.onclick = () => {
-    //     rowTR.remove();
-    // }
-    // dataTypeTD.appendChild(deleteRowBtn);
-
-
-
-
     dataTypeTD.appendChild(dataTypeInput);
     attributeTD.appendChild(attributeInput);
     constraintTD.appendChild(constraintDiv);
+    deleteRowTD.appendChild(deleteRowBtn);
     
    
     rowTR.appendChild(dataTypeTD);
     rowTR.appendChild(attributeTD);
     rowTR.appendChild(constraintTD);
+    rowTR.appendChild(deleteRowTD);
 
 
     dataTypeTD.classList += "valign-wrapper";    
@@ -189,19 +193,13 @@ function getNewTableRow(table){
             constraintSelect.removeChild(constraintSelect.childNodes[5]);
         }
 
-        if (!userSettings.fkWarning){
-            userSettings.fkWarning = true;
-            M.toast({html: `This current version does not support the automatic ordering of table creation statements to support mitigate circular dependencies of foreign keys.\n
-                        Once the script is downloaded, you must manually order your table creation statements.
-        `, displayLength: 5000});
-        }
+        
         
     }
 
 
     //untick modal if foreign key is not selected
     constraintInput.addEventListener("click", () => {
-        console.log('on click')
         let selectedIndex = constraintInput.selectedIndex;
 
         constraintInput.addEventListener("change", () => {           

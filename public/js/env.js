@@ -283,12 +283,12 @@ const captureTables = () => {
       let rowElement = tablesToConvert[currentTableNumber].childNodes[currentRowNumber]; //capturing each row element
       
       //capture each table data input's value, assign it to the row object
-      row.dataType = rowElement.childNodes[1].firstElementChild.value
-      row.attribute = rowElement.childNodes[2].firstElementChild.value
+      row.dataType = rowElement.childNodes[0].firstElementChild.value
+      row.attribute = rowElement.childNodes[1].firstElementChild.value
 
       //Constraint Option element value for FK is 'foreign key', and not the actual foreign key value.
       //This takes the Option index text value
-      row.constraint = rowElement.childNodes[3].firstElementChild.firstElementChild;
+      row.constraint = rowElement.childNodes[2].firstElementChild.firstElementChild;
       row.constraint = row.constraint.options[row.constraint.selectedIndex].text
       
       table.rows.push(row); //push unique row object into table object
