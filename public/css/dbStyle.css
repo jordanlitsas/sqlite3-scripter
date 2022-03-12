@@ -162,7 +162,7 @@ i.icon-white {
 }
 
 .btn-link{
-    background-color: #98c1d9 !important;
+    background-color: rgb(152, 193, 217) !important;
     color: #39464e !important;
 }
 
@@ -181,11 +181,12 @@ i.icon-white {
  th{
      text-align: center !important;
      background-color: #3e4146 !important;
-
+     width:32%;
  }
 
  td{
      padding: 5px  20px !important;
+     width: 32%;
  }
 
 
@@ -197,4 +198,12 @@ i.icon-white {
  #table-and-pk-for-fk{
     border-bottom: 0 !important;
 
+ }
+ [type="checkbox"]:checked+span:not(.lever):before{
+     border-bottom: 2px solid rgb(152, 193, 217) !important;
+     border-right: 2px solid rgb(152, 193, 217) !important;
+ }
+
+ [type="checkbox"]+span:not(.lever):before, [type="checkbox"]:not(.filled-in)+span:not(.lever):after{
+    border: 2px solid rgb(152, 193, 217) !important
  }

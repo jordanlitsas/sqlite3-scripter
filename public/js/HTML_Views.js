@@ -121,6 +121,7 @@ function getNewTableRow(table){
    
     let fkLabelSpan = document.createElement('span');
     let fkLabelTextNode = document.createTextNode('FK');
+    fkLabelSpan.style = "color: #98C1D9;";
     fkLabelSpan.appendChild(fkLabelTextNode);
     
 
@@ -133,16 +134,13 @@ function getNewTableRow(table){
 
     
 
-    let deleteRowBtn = document.createElement('button');
-    deleteRowBtn.classList.add('small');
-    deleteRowBtn.classList.add('material-icons');
-    deleteRowBtn.innerText = "cancel";
+    let deleteRowBtn = document.createElement('input');
+    deleteRowBtn.type = "image";
+    deleteRowBtn.src = "./resources/delete-row.svg";
+    deleteRowBtn.style = "height: 4.5vh; padding-top: 1em !important;";
     deleteRowBtn.onclick = () => {
         rowTR.remove();
     }
-
-    //make delete row TD the size of the button
-    deleteRowTD.style = "widtch: 10% !important"
 
 
     
@@ -155,6 +153,7 @@ function getNewTableRow(table){
     constraintInput.classList.add("table-input");
 
     constraintDiv.classList.add("row");
+    constraintDiv.classList.add("valign-wrapper")
     constraintInput.classList.add("col");
     constraintInput.classList.add("s10");
     fkLabelContainer.classList.add("col");
